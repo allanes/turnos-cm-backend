@@ -24,29 +24,12 @@ class Turno(TurnoBase):
     class Config:
         orm_mode = True
 
-class PersonaBase(BaseModel):
+        
+class PacienteBase(BaseModel):
     nombre: str
     apellido: str
     email: str
     telefono: str
-    
-    
-class PersonaCreate(PersonaBase):
-    pass
-    
-    
-class PersonaUpdate(PersonaBase):
-    pass
-    
-    
-class Persona(PersonaBase):
-    id: int
-    
-    class Config:
-        orm_mode = True
-        
-class PacienteBase(BaseModel):
-    pass    
     
 class PacienteCreate(PacienteBase):
     pass
@@ -56,37 +39,17 @@ class PacienteUpdate(PacienteBase):
     
 class Paciente(PacienteBase):
     id: int
-    id_persona: int
     
-    persona: Persona
-    turnos: list[Turno]
+    # turnos: list[Turno] = []
     
     class Config:
         orm_mode = True
-
-
-class UsuarioBase(BaseModel):
-    username: str
-    password: str
-    tipo: str
-    
-class UsuarioCreate(UsuarioBase):
-    pass    
-    
-class UsuarioUpdate(UsuarioBase):
-    pass    
-    
-class Usuario(UsuarioBase):
-    id: int
-    id_persona: int
-    
-    persona: Persona
-    
-    class Config:
-        orm_mode = True
-
 
 class MedicoBase(BaseModel):
+    nombre: str
+    apellido: str
+    email: str
+    telefono: str
     especialidad: str
     
 class MedicoCreate(MedicoBase):
@@ -97,16 +60,18 @@ class MedicoUpdate(MedicoBase):
     
 class Medico(MedicoBase):
     id: int
-    id_usuario: int
     
-    usuario: Usuario
-    turnos: list[Turno]
+    # turnos: list[Turno] = []
     
     class Config:
         orm_mode = True
 
 
 class RecepcionistaBase(BaseModel):
+    nombre: str
+    apellido: str
+    email: str
+    telefono: str
     pass
     
 class RecepcionistaCreate(RecepcionistaBase):
@@ -117,9 +82,6 @@ class RecepcionistaUpdate(RecepcionistaBase):
     
 class Recepcionista(RecepcionistaBase):
     id: int
-    id_usuario: int
-    
-    usuario: Usuario
     
     class Config:
         orm_mode = True

@@ -4,47 +4,41 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
-# def create_persona(db: Session, persona: schemas.PersonaCreate, **kwargs):
-#     db_persona = models.Persona(**persona.dict())
-#     db.add(db_persona)
-#     db.commit()
-#     db.refresh(db_persona)
-#     return db_persona
+def get_pacientes(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Paciente).offset(skip).limit(limit).all()
 
-# def create_persona_desde_paciente(db: Session, paciente: schemas.PacienteCreate):
-#     persona = schemas.PersonaCreate(**paciente.dict())
-#     return create_persona(db, persona)
+def create_paciente(db: Session, paciente: schemas.PacienteCreate) -> models.Paciente:
+    db_paciente = models.Paciente(**paciente.dict())
+    db.add(db_paciente)
+    db.commit()
+    db.refresh(db_paciente)
+    return db_paciente
 
-# def create_persona_desde_usuario(db: Session, usuario: schemas.UsuarioCreate):
-#     persona = schemas.UsuarioCreate(**usuario.dict())
-#     return create_persona(db, persona)    
+def get_medicos(db: Session, skip: int = 0, limit: int = 100) -> list[models.Medico]:
+    return db.query(models.Medico).offset(skip).limit(limit).all()
 
-# def get_pacientes(db: Session, skip: int = 0, limit: int = 100):
-#     return db.query(models.Paciente).offset(skip).limit(limit).all()
+def get_medico(db: Session, medico_id: int) -> models.Medico:
+    return db.query(models.Medico).filter(models.Medico.id == medico_id).first()
 
-# def create_paciente(db: Session, paciente: schemas.PacienteCreate):
-#     db_persona = create_persona_desde_paciente(db, paciente)
-#     db_paciente = models.Paciente(id_persona=db_persona.id)
-#     db.add(db_paciente)
-#     db.commit()
-#     db.refresh(db_paciente)
-#     return db_paciente
+def create_medico(db: Session, medico: schemas.MedicoCreate) -> models.Medico:
+    db_medico = models.Medico(**medico.dict())
+    db.add(db_medico)
+    db.commit()
+    db.refresh(db_medico)
+    return db_medico
 
-# def create_usuario(db: Session, usuario: schemas.UsuarioCreate):
-#     db_persona = create_persona_desde_usuario(db, usuario)
-#     db_usuario = models.Usuario(id_persona=db_persona.id)
-#     db.add(db_usuario)
-#     db.commit()
-#     db.refresh(db_usuario)
-#     return db_usuario
+def get_recepcionistas(db: Session, skip: int = 0, limit: int = 100) -> list[models.Recepcionista]:
+    return db.query(models.Recepcionista).offset(skip).limit(limit).all()
 
-# def create_recepcionista(db: Session, recepcionista: schemas.RecepcionistaCreate):
-#     db_usuario = create_usuario(db, recepcionista)
-#     db_recepcionista = models.Recepcionista(id_usuario=db_usuario.id)
-#     db.add(db_recepcionista)
-#     db.commit()
-#     db.refresh(db_recepcionista)
-#     return db_recepcionista
+def get_recepcionista(db: Session, recepcionista_id: int) -> models.Recepcionista:
+    return db.query(models.Recepcionista).filter(models.Recepcionista.id == recepcionista_id).first()
+
+def create_recepcionista(db: Session, recepcionista: schemas.RecepcionistaCreate) -> models.Recepcionista:
+    db_recepcionista = models.Recepcionista(**recepcionista.dict())
+    db.add(db_recepcionista)
+    db.commit()
+    db.refresh(db_recepcionista)
+    return db_recepcionista
 
 def get_consultorios(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Consultorio).offset(skip).limit(limit).all()
@@ -53,12 +47,10 @@ def get_consultorio(db: Session, consultorio_id: int) -> models.Consultorio:
     return db.query(models.Consultorio).filter(models.Consultorio.id == consultorio_id).first()
 
 def create_consultorio(db: Session, consultorio: schemas.ConsultorioCreate):
-    print(f'consultorio dict: {consultorio.dict()}')
     db_consultorio = models.Consultorio(**consultorio.dict())
     db.add(db_consultorio)
     db.commit()
     db.refresh(db_consultorio)
-
     return db_consultorio
 
 def update_consultorio(db: Session, consultorio_id:int , consultorio: models.Consultorio) -> models.Consultorio:
