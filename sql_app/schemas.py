@@ -1,31 +1,30 @@
-from enum import Enum
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class TurnoBase(BaseModel):
     id_paciente: int
     id_medico: int
     motivo_consulta: str
     fecha: datetime
-    estado: str
-    
-    
+        
 class TurnoCreate(TurnoBase):
-    pass
-    
-    
+    pendiente = False
+        
 class TurnoUpdate(TurnoBase):
-    pass
-    
+    pass    
     
 class Turno(TurnoBase):
-    id: int    
-
+    id: int
+    
+    # paciente: Paciente
+    # medico: Medico
+    
     class Config:
         orm_mode = True
 
-        
+
 class PacienteBase(BaseModel):
+    dni: int
     nombre: str
     apellido: str
     email: str
@@ -40,12 +39,14 @@ class PacienteUpdate(PacienteBase):
 class Paciente(PacienteBase):
     id: int
     
-    # turnos: list[Turno] = []
+    turnos: list[Turno] = []
     
     class Config:
         orm_mode = True
 
+
 class MedicoBase(BaseModel):
+    dni: int
     nombre: str
     apellido: str
     email: str
@@ -53,7 +54,7 @@ class MedicoBase(BaseModel):
     especialidad: str
     
 class MedicoCreate(MedicoBase):
-    pass
+    activo = True
     
 class MedicoUpdate(MedicoBase):
     pass
@@ -61,18 +62,35 @@ class MedicoUpdate(MedicoBase):
 class Medico(MedicoBase):
     id: int
     
-    # turnos: list[Turno] = []
+    consultorio: str | None = None
+    turnos: list[Turno] = []
     
     class Config:
         orm_mode = True
 
+class RegistroConsultoriosBase(BaseModel):
+    id_consultorio: int
+    id_medico: int
+    fecha: datetime
+
+class RegistroConsultoriosCreate(RegistroConsultoriosBase):
+    pass
+
+class RegistroConsultoriosUpdate(RegistroConsultoriosBase):
+    pass
+
+class RegistroConsultorios(RegistroConsultoriosBase):
+    id: int
+
+    class Config:
+        orm_mode = True
 
 class RecepcionistaBase(BaseModel):
+    dni: int
     nombre: str
     apellido: str
     email: str
     telefono: str
-    pass
     
 class RecepcionistaCreate(RecepcionistaBase):
     pass
@@ -91,7 +109,6 @@ class ConsultorioBase(BaseModel):
     numero: int
     sala: int
     descripcion: str
-    estado: str
     
 class ConsultorioCreate(ConsultorioBase):
     pass    
@@ -104,5 +121,3 @@ class Consultorio(ConsultorioBase):
     
     class Config:
         orm_mode = True
-    
-        

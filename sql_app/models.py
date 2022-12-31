@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from .database import Base
     
@@ -7,33 +7,39 @@ class Paciente(Base):
     __tablename__ = 'pacientes'
     
     id = Column(Integer, primary_key=True)
+    dni = Column(Integer)
     nombre = Column(String)
     apellido = Column(String)
     email = Column(String)
     telefono = Column(String)
     
-    # turnos = relationship("Turno", back_populates="paciente")
+    turnos = relationship('Turno', back_populates='paciente')
     
+
+class Recepcionista(Base):
+    __tablename__ = 'recepcionistas'
     
+    id = Column(Integer, primary_key=True)
+    dni = Column(Integer)
+    nombre = Column(String)
+    apellido = Column(String)
+    email = Column(String)
+    telefono = Column(String)
+    
+
 class Medico(Base):
     __tablename__ = 'medicos'
     
     id = Column(Integer, primary_key=True)
+    dni = Column(Integer)
     nombre = Column(String)
     apellido = Column(String)
     email = Column(String)
     telefono = Column(String)
     especialidad = Column(String)
+    activo = Column(Boolean, default=True)
     
-    
-class Recepcionista(Base):
-    __tablename__ = 'recepcionistas'
-    
-    id = Column(Integer, primary_key=True)
-    nombre = Column(String)
-    apellido = Column(String)
-    email = Column(String)
-    telefono = Column(String)
+    turnos = relationship('Turno', back_populates='medico')
     
     
 class Consultorio(Base):
@@ -43,7 +49,15 @@ class Consultorio(Base):
     numero = Column(Integer)
     sala = Column(Integer)
     descripcion = Column(String)
-    estado = Column(String)
+    
+
+class RegistroConsultorios(Base):
+    __tablename__ = 'registro_consultorios'
+    
+    id = Column(Integer, primary_key=True)
+    id_consultorio = Column(Integer, ForeignKey('consultorios.id'))
+    id_medico = Column(Integer, ForeignKey('medicos.id'))
+    fecha = Column(DateTime)
     
     
 class Turno(Base):
@@ -54,8 +68,7 @@ class Turno(Base):
     id_medico = Column(Integer, ForeignKey('medicos.id'))
     motivo_consulta = Column(String)
     fecha = Column(DateTime)
-    estado = Column(String)
+    pendiente = Column(Boolean, default=True)
     
-    # paciente = relationship("Paciente", back_populates="turnos")
-    # medico = relationship("Medico", back_populates="turnos")
-
+    paciente = relationship(Paciente, back_populates='turnos')
+    medico = relationship(Medico, back_populates='turnos')
