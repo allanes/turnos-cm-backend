@@ -36,5 +36,5 @@ class Consultorio(ConsultorioInDBBase):
 
 
 # Properties properties stored in DB
-class ItemInDB(ConsultorioInDBBase):
+class ConsultorioInDB(ConsultorioInDBBase):
     pass

@@ -8,33 +8,6 @@ def standard_creation(db:Session, db_model):
     db.refresh(db_model)
     return db_model
 
-def get_pacientes(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Paciente).offset(skip).limit(limit).all()
-
-def get_paciente(db: Session, paciente_id: int) -> models.Paciente:
-    return db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
-
-def create_paciente(db: Session, paciente: schemas_dep.PacienteCreate) -> models.Paciente:
-    db_paciente = models.Paciente(**paciente.dict())
-    return standard_creation(db=db, db_model=db_paciente)
-
-def update_paciente(db: Session, paciente_id: int, paciente: schemas_dep.PacienteUpdate) -> models.Paciente:
-    db_paciente = get_paciente(db, paciente_id)
-    if not db_paciente:
-        return None
-    
-    update_data = paciente.dict(exclude_unset=True)
-    db.query(models.Paciente).filter(models.Paciente.id == paciente_id).update(update_data)
-    db.commit()
-    db.refresh(db_paciente)
-
-    return db_paciente
-
-def delete_paciente(db: Session, paciente_id: int) -> models.Paciente:
-    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
-    db.delete(paciente)
-    db.commit()
-    return paciente
 
 def get_ultimo_consultorio_by_medico(db: Session, medico_id: int) -> str:
     # consultorios = db.query(models.Consultorio).join(models.RegistroConsultorios).filter(models.RegistroConsultorios.id_medico == medico_id).order_by(models.RegistroConsultorios.fecha.desc()).limit(5)

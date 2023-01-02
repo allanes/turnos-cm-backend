@@ -23,28 +23,6 @@ class Turno(TurnoBase):
         orm_mode = True
 
 
-class PacienteBase(BaseModel):
-    dni: int
-    nombre: str
-    apellido: str
-    email: str
-    telefono: str
-    
-class PacienteCreate(PacienteBase):
-    pass
-    
-class PacienteUpdate(PacienteBase):
-    pass
-    
-class Paciente(PacienteBase):
-    id: int
-    
-    turnos: list[Turno] = []
-    
-    class Config:
-        orm_mode = True
-
-
 class MedicoBase(BaseModel):
     dni: int
     nombre: str
