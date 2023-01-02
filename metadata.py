@@ -35,22 +35,14 @@ fastapi_metadata = {
 consultorios_ejemplo = [
     {'numero': 1, 'sala': 1, 'descripcion': 'Consultorio 1-1'},
     {'numero': 2, 'sala': 1, 'descripcion': 'Consultorio 2-1'},
-    {'numero': 3, 'sala': 1, 'descripcion': 'Consultorio 3-1'},
-    {'numero': 4, 'sala': 1, 'descripcion': 'Consultorio 4-1'},
-    {'numero': 5, 'sala': 1, 'descripcion': 'Consultorio 5-1'},
-    {'numero': 6, 'sala': 2, 'descripcion': 'Consultorio 6-2'},
-    {'numero': 7, 'sala': 2, 'descripcion': 'Consultorio 7-2'},
-    {'numero': 8, 'sala': 2, 'descripcion': 'Consultorio 8-2'},
-    {'numero': 9, 'sala': 2, 'descripcion': 'Consultorio 9-2'},
-    {'numero': 10, 'sala': 2, 'descripcion': 'Consultorio 10-2'}
+    {'numero': 3, 'sala': 2, 'descripcion': 'Consultorio 3-2'},
+    {'numero': 4, 'sala': 2, 'descripcion': 'Consultorio 4-2'},
 ]
 
 medicos__ejemplo = [
     {'dni': 12345678, 'nombre': 'Juan', 'apellido': 'Pérez', 'email': 'juan@gmail.com', 'telefono': '111-222-333', 'especialidad': 'Cardiología'},
     {'dni': 12345679, 'nombre': 'Laura', 'apellido': 'González', 'email': 'laura@gmail.com', 'telefono': '111-222-334', 'especialidad': 'Ginecología'},
     {'dni': 12345680, 'nombre': 'Pablo', 'apellido': 'Martínez', 'email': 'pablo@gmail.com', 'telefono': '111-222-335', 'especialidad': 'Oftalmología'},
-    {'dni': 12345681, 'nombre': 'Ana', 'apellido': 'Rodríguez', 'email': 'ana@gmail.com', 'telefono': '111-222-336', 'especialidad': 'Dermatología'},
-    {'dni': 12345682, 'nombre': 'Pedro', 'apellido': 'Gómez', 'email': 'pedro@gmail.com', 'telefono': '111-222-337', 'especialidad': 'Psiquiatría'},
     {'dni': 12345683, 'nombre': 'Mario', 'apellido': 'Lopez', 'email': 'mario@gmail.com', 'telefono': '111-222-338', 'especialidad': 'Psiquiatría', 'activo': False}
 ]
 
@@ -66,11 +58,15 @@ pacientes__ejemplo = [
 ]
 
 turnos__ejemplo = [
+    {'id_medico': 4, 'id_paciente': 5, 'fecha': datetime(2022,6,1,14,00,00), 'motivo_consulta': 'estaba con la garganta', 'pendiente': False},
     {'id_medico': 1, 'id_paciente': 1, 'fecha': datetime(2022,7,1,10,00,00), 'motivo_consulta': 'estaba con la garganta'},
     {'id_medico': 2, 'id_paciente': 3, 'fecha': datetime(2022,7,1,11,00,00), 'motivo_consulta': 'estaba con la garganta'},
     {'id_medico': 3, 'id_paciente': 4, 'fecha': datetime(2022,7,1,12,00,00), 'motivo_consulta': 'estaba con la garganta'},
-    {'id_medico': 4, 'id_paciente': 2, 'fecha': datetime(2022,7,1,13,00,00), 'motivo_consulta': 'estaba con la garganta'},
-    {'id_medico': 5, 'id_paciente': 5, 'fecha': datetime(2022,7,1,14,00,00), 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 3, 'id_paciente': 2, 'fecha': datetime(2022,7,1,13,00,00), 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 3, 'id_paciente': 1, 'fecha': datetime(2022,7,1,14,00,00), 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 2, 'id_paciente': 3, 'fecha': datetime(2022,7,1,15,00,00), 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 1, 'id_paciente': 4, 'fecha': datetime(2022,7,1,16,00,00), 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 2, 'id_paciente': 2, 'fecha': datetime(2022,7,1,17,00,00), 'motivo_consulta': 'estaba con la garganta'},
 ]
 
 registro_consultorios_ejemplo = [
@@ -78,8 +74,6 @@ registro_consultorios_ejemplo = [
     {'id_consultorio': 2, 'id_medico': 4, 'fecha': datetime(2022,7,1,8,00,00)},
     {'id_consultorio': 3, 'id_medico': 6, 'fecha': datetime(2022,7,1,8,00,00)},
     {'id_consultorio': 4, 'id_medico': 1, 'fecha': datetime(2022,7,1,8,00,00)},
-    {'id_consultorio': 5, 'id_medico': 7, 'fecha': datetime(2022,7,1,8,00,00)},
-    {'id_consultorio': 6, 'id_medico': 3, 'fecha': datetime(2022,7,1,8,00,00)},
 ]
 
 # En las 2 siguientes listas, hacer rejuntar los ejemplos y sus modelos base

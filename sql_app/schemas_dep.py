@@ -61,13 +61,13 @@ class MedicoUpdate(MedicoBase):
     
 class Medico(MedicoBase):
     id: int
-    
-    consultorio: str | None = None
+    activo:bool
+    consultorio: str | None
     turnos: list[Turno] = []
     
     class Config:
         orm_mode = True
-
+        
 class RegistroConsultoriosBase(BaseModel):
     id_consultorio: int
     id_medico: int
@@ -104,20 +104,3 @@ class Recepcionista(RecepcionistaBase):
     class Config:
         orm_mode = True
     
-
-class ConsultorioBase(BaseModel):
-    numero: int
-    sala: int
-    descripcion: str
-    
-class ConsultorioCreate(ConsultorioBase):
-    pass    
-    
-class ConsultorioUpdate(ConsultorioBase):
-    pass    
-    
-class Consultorio(ConsultorioBase):
-    id: int
-    
-    class Config:
-        orm_mode = True
