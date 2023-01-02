@@ -2,6 +2,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
 from sql_app import crud, models, schemas_dep
+from sql_app.crud_dep import init_db
 from sql_app.api_v1.api import api_router
 from sql_app.database import engine
 from sql_app.deps import get_db
@@ -14,7 +15,7 @@ app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/inicializar_db/")
 def inicializar_db(db: Session = Depends(get_db)):
-    crud.init_db(db=db)
+    init_db(db=db)
     
 
 # **** TURNOS *****
