@@ -22,29 +22,6 @@ class Turno(TurnoBase):
     class Config:
         orm_mode = True
 
-
-class MedicoBase(BaseModel):
-    dni: int
-    nombre: str
-    apellido: str
-    email: str
-    telefono: str
-    especialidad: str
-    
-class MedicoCreate(MedicoBase):
-    activo = True
-    
-class MedicoUpdate(MedicoBase):
-    pass
-    
-class Medico(MedicoBase):
-    id: int
-    activo:bool
-    consultorio: str | None
-    turnos: list[Turno] = []
-    
-    class Config:
-        orm_mode = True
         
 class RegistroConsultoriosBase(BaseModel):
     id_consultorio: int

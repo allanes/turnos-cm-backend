@@ -9,45 +9,6 @@ def standard_creation(db:Session, db_model):
     return db_model
 
 
-def get_ultimo_consultorio_by_medico(db: Session, medico_id: int) -> str:
-    # consultorios = db.query(models.Consultorio).join(models.RegistroConsultorios).filter(models.RegistroConsultorios.id_medico == medico_id).order_by(models.RegistroConsultorios.fecha.desc()).limit(5)
-    
-    ultimo_consultorio = (
-        db.query(models.Consultorio.descripcion)
-        .join(models.RegistroConsultorios)
-        .filter(models.RegistroConsultorios.id_medico == medico_id)
-        .order_by(models.RegistroConsultorios.fecha.desc())
-        .first()
-    )
-    return ultimo_consultorio.descripcion if ultimo_consultorio else None
-    
-
-def get_medicos(db: Session, skip: int = 0, limit: int = 100) -> list[models.Medico]:
-    db_medico = db.query(models.Medico)\
-        .filter(models.Medico.activo==True)\
-        .limit(limit)\
-        .all()
-    return db_medico
-
-
-def get_medico(db: Session, medico_id: int) -> models.Medico:
-    db_medico = db.query(models.Medico).filter(models.Medico.id == medico_id).first()
-    
-    return db_medico
-
-def create_medico(db: Session, medico: schemas_dep.MedicoCreate) -> models.Medico:
-    db_medico = models.Medico(**medico.dict())
-    db_medico = standard_creation(db=db, db_model=db_medico)
-    consultorios = get_ultimo_consultorio_by_medico(db, medico_id=db_medico.id)
-    db_medico.consultorio = consultorios.first()
-    return db_medico
-
-def delete_medico(db: Session, medico_id: int) -> models.Medico:
-    medico = db.query(models.Medico).filter(models.Medico.id == medico_id).update({'activo': False})
-    db.commit()
-    db.refresh(medico)
-    return medico
-
 def get_recepcionistas(db: Session, skip: int = 0, limit: int = 100) -> list[models.Recepcionista]:
     return db.query(models.Recepcionista).offset(skip).limit(limit).all()
 

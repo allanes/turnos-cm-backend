@@ -1,5 +1,6 @@
 from .crud_consultorio import consultorio
 from .crud_paciente import paciente
+from .crud_medico import medico
 
 # For a new basic set of CRUD operations you could just do
 

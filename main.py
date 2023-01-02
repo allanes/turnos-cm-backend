@@ -56,48 +56,5 @@ def get_turno(turno_id: int, db: Session = Depends(get_db)):
 #     return db_turno
 
 
-# **** MEDICOS *****
 
-@app.get("/medicos/", response_model=list[schemas_dep.Medico], tags=['Medicos'])
-def list_medicos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    db_medicos = crud.get_medicos(db, skip=skip, limit=limit)
-    medicos = []
-    for db_medico in db_medicos:
-        consultorio = crud.get_ultimo_consultorio_by_medico(db=db, medico_id=db_medico.id)
-        consultorio = consultorio if consultorio else ''
-        medicos.append({**db_medico.__dict__, 'consultorio': consultorio})
-    return medicos
-
-@app.get("/medicos/{medico_id}", response_model=schemas_dep.Medico, tags=['Medicos'])
-def get_medico(medico_id: int, db: Session = Depends(get_db)):
-    db_medico = crud.get_medico(db, medico_id=medico_id)
-    if db_medico is None:
-        raise HTTPException(status_code=404, detail="Medico no encontrado")
-    consultorio = crud.get_ultimo_consultorio_by_medico(db=db, medico_id=medico_id)
-    return {**db_medico.__dict__, 'consultorio': consultorio}
-
-@app.post("/medicos/", response_model=schemas_dep.Medico, tags=['Medicos'])
-def post_medico(medico: schemas_dep.MedicoCreate, db: Session = Depends(get_db)):
-    db_medico = crud.create_medico(db=db, medico=medico)
-    if db_medico is None:
-        raise HTTPException(status_code=400, detail="No se pudo crear el médico")
-    return db_medico
-
-# @app.put("/medicos/{medico_id}", response_model=schemas.Medico, tags=['Medicos'])
-# def update_medico(medico_id: int, medico: schemas.MedicoUpdate, db: Session = Depends(get_db)):
-#     db_medico = crud.get_medico(db, medico_id=medico_id)
-#     if db_medico is None:
-#         raise HTTPException(status_code=404, detail="Medico no encontrado")
-#     updated_medico = crud.update_medico(db=db, medico_id=db_medico.id, medico_update=medico)
-#     return updated_medico
-
-@app.delete("/medicos/{medico_id}", response_model=schemas_dep.Medico, tags=['Medicos'])
-def delete_medico(medico_id: int, db: Session = Depends(get_db)):
-    db_medico = crud.get_medico(db, medico_id=medico_id)
-    if db_medico is None:
-        raise HTTPException(status_code=404, detail="Medico no encontrado")
-    if not db_medico.activo:
-        raise HTTPException(status_code=404, detail="El médico ya estaba inactivo")
-    crud.delete_medico(db=db, medico_id=db_medico.id)
-    return db_medico
 

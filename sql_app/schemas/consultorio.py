@@ -32,7 +32,8 @@ class ConsultorioInDBBase(ConsultorioBase):
 
 # Properties to return to client
 class Consultorio(ConsultorioInDBBase):
-    pass
+    medico: str | None
+    pacientes: list[str] | None
 
 
 # Properties properties stored in DB
