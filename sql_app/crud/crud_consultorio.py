@@ -11,7 +11,7 @@ from sql_app.schemas.consultorio import ConsultorioCreate, ConsultorioUpdate, Co
 
 class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate]):
     def get_consultorios_detallados(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[Consultorio]:
-        today = datetime.utcnow().date()
+        today = datetime.now().date()
         
         consultorios_activos = (
             db.query(RegistroConsultorios)

@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from .database import Base
@@ -6,7 +7,7 @@ from .database import Base
 class Paciente(Base):
     __tablename__ = 'pacientes'
     
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
     nombre = Column(String)
     apellido = Column(String)
     email = Column(String)
@@ -18,7 +19,7 @@ class Paciente(Base):
 class Recepcionista(Base):
     __tablename__ = 'recepcionistas'
     
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
     nombre = Column(String)
     apellido = Column(String)
     email = Column(String)
@@ -28,7 +29,7 @@ class Recepcionista(Base):
 class Medico(Base):
     __tablename__ = 'medicos'
     
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
     nombre = Column(String)
     apellido = Column(String)
     email = Column(String)
@@ -54,7 +55,7 @@ class RegistroConsultorios(Base):
     id = Column(Integer, primary_key=True)
     id_consultorio = Column(Integer, ForeignKey('consultorios.id'))
     id_medico = Column(Integer, ForeignKey('medicos.id'))
-    fecha = Column(DateTime)
+    fecha = Column(DateTime, default=datetime.now())
     
     
 class Turno(Base):
@@ -64,7 +65,7 @@ class Turno(Base):
     id_paciente = Column(Integer, ForeignKey('pacientes.id'))
     id_medico = Column(Integer, ForeignKey('medicos.id'))
     motivo_consulta = Column(String)
-    fecha = Column(DateTime)
+    fecha = Column(DateTime, default=datetime.now())
     pendiente = Column(Boolean, default=True)
     
     paciente = relationship(Paciente, back_populates='turnos')

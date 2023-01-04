@@ -2,7 +2,7 @@ import datetime
 from time import strptime
 from sql_app import models
 
-today = datetime.datetime.utcnow().date()
+today = datetime.datetime.now().date()
 opening_time = datetime.time(8)
 opening_timestamp = datetime.datetime.combine(today, opening_time)
 tiempo_turno = datetime.timedelta(minutes=30)
@@ -45,6 +45,12 @@ pacientes__ejemplo = [
     {'id': 23456796, 'nombre': 'Pablo', 'apellido': 'Muñoz', 'email': 'pablo@gmail.com', 'telefono': '111-222-451'},
 ]
 
+recepcionistas__ejemplo = [
+    {'id': 34567890, 'nombre': 'María', 'apellido': 'García', 'email': 'maria@gmail.com', 'telefono': '111-222-555'},
+    {'id': 45678901, 'nombre': 'Juan', 'apellido': 'Pérez', 'email': 'juan@gmail.com', 'telefono': '111-222-666'},
+    {'id': 56789012, 'nombre': 'Ana', 'apellido': 'Rodríguez', 'email': 'ana@gmail.com', 'telefono': '111-222-777'}
+]
+
 turnos__ejemplo = [
     {'id_medico': medicos__ejemplo[1]['id'], 'id_paciente': pacientes__ejemplo[5]['id'], 'fecha': opening_timestamp + 0*tiempo_turno, 'motivo_consulta': 'estaba con la garganta', 'pendiente': False},
     {'id_medico': medicos__ejemplo[1]['id'], 'id_paciente': pacientes__ejemplo[1]['id'], 'fecha': opening_timestamp + 1*tiempo_turno, 'motivo_consulta': 'estaba con la garganta'},
@@ -73,6 +79,7 @@ ejemplos = [
     consultorios_ejemplo,
     medicos__ejemplo,
     pacientes__ejemplo,
+    recepcionistas__ejemplo,
     turnos__ejemplo,
     registro_consultorios_ejemplo
 ]
@@ -81,6 +88,7 @@ modelos_base = [
     models.Consultorio,
     models.Medico,
     models.Paciente,
+    models.Recepcionista,
     models.Turno,
     models.RegistroConsultorios
 ]

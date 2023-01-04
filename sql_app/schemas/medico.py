@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import BaseModel
-from sql_app.schemas_dep import Turno
+from sql_app.schemas import Turno
 
 # Shared properties
 class MedicoBase(BaseModel):

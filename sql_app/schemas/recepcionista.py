@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from sql_app.schemas import Turno
 
 # Shared properties
-class PacienteBase(BaseModel):
+class RecepcionistaBase(BaseModel):
     id: int
     nombre: Optional[str]
     apellido: Optional[str]
@@ -12,31 +12,28 @@ class PacienteBase(BaseModel):
     telefono: Optional[str]
     
 # Properties to receive on item creation
-class PacienteCreate(PacienteBase):
+class RecepcionistaCreate(RecepcionistaBase):
     nombre: str
     apellido: str
     
 # Properties to receive on item update    
-class PacienteUpdate(PacienteBase):
+class RecepcionistaUpdate(RecepcionistaBase):
     pass    
 
 # Properties shared by models stored in DB
-class PacienteInDBBase(PacienteBase):
+class RecepcionistaInDBBase(RecepcionistaBase):
     nombre: str
     apellido: str
     email: str
     telefono: str
     
-    turnos: list[Turno] = []
-    
     class Config:
         orm_mode = True        
 
 # Properties to return to client
-class Paciente(PacienteInDBBase):
+class Recepcionista(RecepcionistaInDBBase):
     pass
 
-
 # Properties stored in DB
-class PacienteInDB(PacienteInDBBase):
+class RecepcionistaInDB(RecepcionistaInDBBase):
     pass
