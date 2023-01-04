@@ -20,12 +20,10 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
             .distinct()
             .offset(skip).limit(limit).all()
         )
-        print(f'Consuls activos: {len(consultorios_activos)}')
         
         consuls_salida = []
         for consultorio in consultorios_activos:
             db_medico = (db.query(Medico).where(Medico.id==consultorio.id_medico).first())
-            
             nombre_medico = f'{db_medico.apellido} {db_medico.nombre}' if db_medico else None
             
             db_turnos = (
@@ -37,11 +35,14 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
             )
             ids_pacientes = [db_turno.id_paciente for db_turno in db_turnos]
             
-            nombres_pacientes = []
-            for id_pac in ids_pacientes:
-                db_paciente = (db.query(Paciente).where(Paciente.id==id_pac)).first()
-                nombre_paciente = f'{db_paciente.apellido} {db_paciente.nombre}' if db_paciente else None
-                nombres_pacientes.append(nombre_paciente)
+            if not ids_pacientes:
+                nombres_pacientes = None
+            else:
+                nombres_pacientes = []
+                for id_pac in ids_pacientes:
+                    db_paciente = (db.query(Paciente).where(Paciente.id==id_pac)).first()
+                    nombre_paciente = f'{db_paciente.apellido} {db_paciente.nombre}' if db_paciente else None
+                    nombres_pacientes.append(nombre_paciente)
             
             consul = super().get(db=db, id=consultorio.id_consultorio)
             

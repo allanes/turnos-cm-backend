@@ -5,7 +5,7 @@ from sql_app.schemas_dep import Turno
 
 # Shared properties
 class MedicoBase(BaseModel):
-    dni: Optional[int]
+    id: int
     nombre: Optional[str]
     apellido: Optional[str]
     email: Optional[str]
@@ -14,7 +14,6 @@ class MedicoBase(BaseModel):
     
 # Properties to receive on item creation
 class MedicoCreate(MedicoBase):
-    dni: int
     nombre: str
     apellido: str
     activo = True
@@ -25,8 +24,6 @@ class MedicoUpdate(MedicoBase):
 
 # Properties shared by models stored in DB
 class MedicoInDBBase(MedicoBase):
-    id: int
-    dni: int
     nombre: str
     apellido: str
     email: str

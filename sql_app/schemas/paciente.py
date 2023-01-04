@@ -5,7 +5,7 @@ from sql_app.schemas_dep import Turno
 
 # Shared properties
 class PacienteBase(BaseModel):
-    dni: Optional[int]
+    id: int
     nombre: Optional[str]
     apellido: Optional[str]
     email: Optional[str]
@@ -13,7 +13,6 @@ class PacienteBase(BaseModel):
     
 # Properties to receive on item creation
 class PacienteCreate(PacienteBase):
-    dni: int
     nombre: str
     apellido: str
     
@@ -23,8 +22,6 @@ class PacienteUpdate(PacienteBase):
 
 # Properties shared by models stored in DB
 class PacienteInDBBase(PacienteBase):
-    id: int
-    dni: int
     nombre: str
     apellido: str
     email: str

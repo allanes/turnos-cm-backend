@@ -6,8 +6,7 @@ from .database import Base
 class Paciente(Base):
     __tablename__ = 'pacientes'
     
-    id = Column(Integer, primary_key=True)
-    dni = Column(Integer)
+    id = Column(Integer, primary_key=True, nullable=False)
     nombre = Column(String)
     apellido = Column(String)
     email = Column(String)
@@ -19,8 +18,7 @@ class Paciente(Base):
 class Recepcionista(Base):
     __tablename__ = 'recepcionistas'
     
-    id = Column(Integer, primary_key=True)
-    dni = Column(Integer)
+    id = Column(Integer, primary_key=True, nullable=False)
     nombre = Column(String)
     apellido = Column(String)
     email = Column(String)
@@ -30,8 +28,7 @@ class Recepcionista(Base):
 class Medico(Base):
     __tablename__ = 'medicos'
     
-    id = Column(Integer, primary_key=True)
-    dni = Column(Integer)
+    id = Column(Integer, primary_key=True, nullable=False)
     nombre = Column(String)
     apellido = Column(String)
     email = Column(String)
