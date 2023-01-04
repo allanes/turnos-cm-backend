@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from sql_app.schemas import recepcionista
 from sql_app.crud import crud_recepcionista
-from sql_app import crud_dep, models, schemas_dep
+from sql_app import crud, models, schemas
 from sql_app import deps
 
 router = APIRouter()

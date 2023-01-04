@@ -7,16 +7,6 @@ opening_time = datetime.time(8)
 opening_timestamp = datetime.datetime.combine(today, opening_time)
 tiempo_turno = datetime.timedelta(minutes=30)
 
-fastapi_metadata = {
-    'title': 'Administración de Turnos - Centro Médico Esperanza',
-    # 'openapi_tags': tags_metadata,
-    'swagger_ui_parameters': {
-        'defaultModelsExpandDepth': 0,
-        'docExpansion': 'list',
-        'requestSnippetsEnabled': True,
-        'tryItOutEnabled': True
-    }
-}
 
 consultorios_ejemplo = [
     {'numero': 1, 'sala': 1, 'descripcion': 'Consultorio 1-1'},

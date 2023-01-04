@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
-import metadata
-from . import models, schemas_dep
+from sql_app.crud import metadata
 
 
 def init_db(db: Session) -> None:
