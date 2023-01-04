@@ -2,7 +2,7 @@ import datetime
 from time import strptime
 from sql_app import models
 
-today = datetime.datetime.utcnow().date() - datetime.timedelta(days=1)
+today = datetime.datetime.utcnow().date()
 opening_time = datetime.time(8)
 opening_timestamp = datetime.datetime.combine(today, opening_time)
 tiempo_turno = datetime.timedelta(minutes=30)
