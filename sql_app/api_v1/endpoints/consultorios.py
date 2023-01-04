@@ -10,6 +10,18 @@ from sql_app import deps
 router = APIRouter()
 
 
+@router.get("/with-details", response_model=List[consultorio.ConsultorioDetallado])
+def read_consultorios_con_detalles(
+    db: Session = Depends(deps.get_db),
+    skip: int = 0,
+    limit: int = 100,
+) -> Any:
+    """
+    Retrieve consultorios.
+    """
+    consultorios = crud.consultorio.get_consultorios_detallados(db, skip=skip, limit=limit)
+    return consultorios
+
 @router.get("/", response_model=List[consultorio.Consultorio])
 def read_consultorios(
     db: Session = Depends(deps.get_db),

@@ -2,6 +2,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
 from sql_app import crud, models, schemas_dep
+from sql_app import crud_dep
 from sql_app.crud_dep import init_db
 from sql_app.api_v1.api import api_router
 from sql_app.database import engine
@@ -21,7 +22,7 @@ def inicializar_db(db: Session = Depends(get_db)):
 # **** TURNOS *****
 @app.post("/turnos/", response_model=schemas_dep.Turno, tags=['Turnos'])
 def post_turno(turno: schemas_dep.TurnoCreate, db: Session = Depends(get_db)):
-    db_turno = crud.create_turno(db=db, turno=turno)
+    db_turno = crud_dep.create_turno(db=db, turno=turno)
     if db_turno is None:
         raise HTTPException(status_code=400, detail="El id de paciente o del médico no existen")
     return db_turno
@@ -29,13 +30,13 @@ def post_turno(turno: schemas_dep.TurnoCreate, db: Session = Depends(get_db)):
 
 @app.get("/turnos/", response_model=list[schemas_dep.Turno], tags=['Turnos'])
 def list_turnos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    turnos = crud.get_turnos(db, skip=skip, limit=limit)
+    turnos = crud_dep.get_turnos(db, skip=skip, limit=limit)
     return turnos
 
 
 @app.get("/turnos/{turno_id}", response_model=schemas_dep.Turno, tags=['Turnos'])
 def get_turno(turno_id: int, db: Session = Depends(get_db)):
-    db_turnos = crud.get_turno(db, turno_id=turno_id)
+    db_turnos = crud_dep.get_turno(db, turno_id=turno_id)
     if db_turnos is None:
         raise HTTPException(status_code=404, detail="Turno no encontrado")
     return db_turnos

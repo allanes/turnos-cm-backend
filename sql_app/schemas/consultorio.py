@@ -32,6 +32,10 @@ class ConsultorioInDBBase(ConsultorioBase):
 
 # Properties to return to client
 class Consultorio(ConsultorioInDBBase):
+    pass
+    
+# Properties to return to client
+class ConsultorioDetallado(ConsultorioInDBBase):
     medico: str | None
     pacientes: list[str] | None
 

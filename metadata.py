@@ -1,29 +1,15 @@
-from datetime import datetime
+import datetime
 from time import strptime
 from sql_app import models
 
-tags_metadata = [
-    {
-        "name": "Consultorios",
-        "description": "Endpoints de operaciones CRUD sobre los ***Consultorios***",
-    },
-    {
-        "name": "Pacientes",
-        "description": "Endpoints de operaciones CRUD sobre los ***Consultorios***",
-    },
-    {
-        "name": "Medicos",
-        "description": "Endpoints de operaciones CRUD sobre los ***Medicos***",
-    },
-    {
-        "name": "Turnos",
-        "description": "Endpoints de operaciones CRUD sobre los ***Turnos***",
-    },
-]
+today = datetime.datetime.utcnow().date() - datetime.timedelta(days=1)
+opening_time = datetime.time(8)
+opening_timestamp = datetime.datetime.combine(today, opening_time)
+tiempo_turno = datetime.timedelta(minutes=30)
 
 fastapi_metadata = {
     'title': 'Administración de Turnos - Centro Médico Esperanza',
-    'openapi_tags': tags_metadata,
+    # 'openapi_tags': tags_metadata,
     'swagger_ui_parameters': {
         'defaultModelsExpandDepth': 0,
         'docExpansion': 'list',
@@ -58,22 +44,26 @@ pacientes__ejemplo = [
 ]
 
 turnos__ejemplo = [
-    {'id_medico': 4, 'id_paciente': 5, 'fecha': datetime(2022,6,1,14,00,00), 'motivo_consulta': 'estaba con la garganta', 'pendiente': False},
-    {'id_medico': 1, 'id_paciente': 1, 'fecha': datetime(2022,7,1,10,00,00), 'motivo_consulta': 'estaba con la garganta'},
-    {'id_medico': 2, 'id_paciente': 3, 'fecha': datetime(2022,7,1,11,00,00), 'motivo_consulta': 'estaba con la garganta'},
-    {'id_medico': 3, 'id_paciente': 4, 'fecha': datetime(2022,7,1,12,00,00), 'motivo_consulta': 'estaba con la garganta'},
-    {'id_medico': 3, 'id_paciente': 2, 'fecha': datetime(2022,7,1,13,00,00), 'motivo_consulta': 'estaba con la garganta'},
-    {'id_medico': 3, 'id_paciente': 1, 'fecha': datetime(2022,7,1,14,00,00), 'motivo_consulta': 'estaba con la garganta'},
-    {'id_medico': 2, 'id_paciente': 3, 'fecha': datetime(2022,7,1,15,00,00), 'motivo_consulta': 'estaba con la garganta'},
-    {'id_medico': 1, 'id_paciente': 4, 'fecha': datetime(2022,7,1,16,00,00), 'motivo_consulta': 'estaba con la garganta'},
-    {'id_medico': 2, 'id_paciente': 2, 'fecha': datetime(2022,7,1,17,00,00), 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 4, 'id_paciente': 5, 'fecha': opening_timestamp + 0*tiempo_turno, 'motivo_consulta': 'estaba con la garganta', 'pendiente': False},
+    {'id_medico': 1, 'id_paciente': 1, 'fecha': opening_timestamp + 1*tiempo_turno, 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 2, 'id_paciente': 3, 'fecha': opening_timestamp + 2*tiempo_turno, 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 3, 'id_paciente': 4, 'fecha': opening_timestamp + 3*tiempo_turno, 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 3, 'id_paciente': 2, 'fecha': opening_timestamp + 4*tiempo_turno, 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 3, 'id_paciente': 1, 'fecha': opening_timestamp + 5*tiempo_turno, 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 2, 'id_paciente': 3, 'fecha': opening_timestamp + 6*tiempo_turno, 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 1, 'id_paciente': 4, 'fecha': opening_timestamp + 7*tiempo_turno, 'motivo_consulta': 'estaba con la garganta'},
+    {'id_medico': 2, 'id_paciente': 2, 'fecha': opening_timestamp + 8*tiempo_turno, 'motivo_consulta': 'estaba con la garganta'},
 ]
 
 registro_consultorios_ejemplo = [
-    {'id_consultorio': 1, 'id_medico': 2, 'fecha': datetime(2022,7,1,8,00,00)},
-    {'id_consultorio': 2, 'id_medico': 4, 'fecha': datetime(2022,7,1,8,00,00)},
-    {'id_consultorio': 3, 'id_medico': 6, 'fecha': datetime(2022,7,1,8,00,00)},
-    {'id_consultorio': 4, 'id_medico': 1, 'fecha': datetime(2022,7,1,8,00,00)},
+    {'id_consultorio': 1, 'id_medico': 2, 'fecha': opening_timestamp + 0*tiempo_turno},
+    {'id_consultorio': 2, 'id_medico': 4, 'fecha': opening_timestamp + 1*tiempo_turno},
+    {'id_consultorio': 3, 'id_medico': 3, 'fecha': opening_timestamp + 2*tiempo_turno},
+    {'id_consultorio': 4, 'id_medico': 1, 'fecha': opening_timestamp + 3*tiempo_turno},
+    {'id_consultorio': 1, 'id_medico': 1, 'fecha': opening_timestamp - datetime.timedelta(days=1) + 4*tiempo_turno},
+    {'id_consultorio': 2, 'id_medico': 2, 'fecha': opening_timestamp - datetime.timedelta(days=1) + 5*tiempo_turno},
+    {'id_consultorio': 3, 'id_medico': 3, 'fecha': opening_timestamp - datetime.timedelta(days=1) + 6*tiempo_turno},
+    {'id_consultorio': 4, 'id_medico': 4, 'fecha': opening_timestamp - datetime.timedelta(days=1) + 7*tiempo_turno},
 ]
 
 # En las 2 siguientes listas, hacer rejuntar los ejemplos y sus modelos base
