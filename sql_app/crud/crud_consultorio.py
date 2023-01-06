@@ -10,7 +10,13 @@ from sql_app.models import Consultorio, Medico, Paciente, RegistroConsultorios, 
 from sql_app.schemas.consultorio import ConsultorioCreate, ConsultorioUpdate, ConsultorioDetallado
 
 class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate]):
-    def get_consultorios_detallados(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[Consultorio]:
+    def get_consultorios_por_sala(self, db: Session, sala:int, *, skip: int = 0, limit: int = 100) -> List[Consultorio]:
+        db_consultorios = db.query(Consultorio).filter(Consultorio.sala == sala).offset(skip).limit(limit).all()
+        
+        return db_consultorios
+    
+    
+    def get_consultorios_detallados(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[ConsultorioDetallado]:
         today = datetime.now().date()
         
         consultorios_activos = (

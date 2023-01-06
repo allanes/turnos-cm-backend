@@ -32,6 +32,9 @@ def create_paciente(
     """
     Create new paciente.
     """
+    paciente = crud_paciente.paciente.get(db=db, id=paciente_in.id)
+    if paciente:
+        raise HTTPException(status_code=409, detail="Paciente already exists")
     paciente = crud_paciente.paciente.create(db=db, obj_in=paciente_in)
     return paciente
 

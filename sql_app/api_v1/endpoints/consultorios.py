@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from sql_app.schemas import consultorio
+from sql_app.crud import crud_consultorio
 from sql_app import crud, models, schemas
 from sql_app import deps
 
@@ -19,7 +20,7 @@ def read_consultorios_con_detalles(
     """
     Retrieve consultorios.
     """
-    consultorios = crud.consultorio.get_consultorios_detallados(db, skip=skip, limit=limit)
+    consultorios = crud_consultorio.consultorio.get_consultorios_detallados(db, skip=skip, limit=limit)
     return consultorios
 
 @router.get("/", response_model=List[consultorio.Consultorio])
@@ -31,7 +32,7 @@ def read_consultorios(
     """
     Retrieve consultorios.
     """
-    consultorios = crud.consultorio.get_multi(db, skip=skip, limit=limit)
+    consultorios = crud_consultorio.consultorio.get_multi(db, skip=skip, limit=limit)
     return consultorios
 
 
@@ -44,7 +45,11 @@ def create_consultorio(
     """
     Create new consultorio.
     """
-    consultorio = crud.consultorio.create(db=db, obj_in=consultorio_in)
+    consultorios_db = crud_consultorio.consultorio.get_consultorios_por_sala(db=db, sala=consultorio_in.sala)
+    print(f'lista de consuls: {consultorios_db}')
+    if len(consultorios_db) > 0 and consultorios_db[0].numero == consultorio_in.numero:
+        raise HTTPException(status_code=409, detail=f'Office {consultorio_in.numero} in room {consultorio_in.sala} already exists')
+    consultorio = crud_consultorio.consultorio.create(db=db, obj_in=consultorio_in)
     return consultorio
 
 
@@ -58,10 +63,10 @@ def update_consultorio(
     """
     Update an consultorio.
     """
-    consultorio = crud.consultorio.get(db=db, id=id)
+    consultorio = crud_consultorio.consultorio.get(db=db, id=id)
     if not consultorio:
         raise HTTPException(status_code=404, detail="Consultorio not found")
-    consultorio = crud.consultorio.update(db=db, db_obj=consultorio, obj_in=consultorio_in)
+    consultorio = crud_consultorio.consultorio.update(db=db, db_obj=consultorio, obj_in=consultorio_in)
     return consultorio
 
 
@@ -74,7 +79,7 @@ def read_consultorio(
     """
     Get consultorio by ID.
     """
-    consultorio = crud.consultorio.get(db=db, id=id)
+    consultorio = crud_consultorio.consultorio.get(db=db, id=id)
     if not consultorio:
         raise HTTPException(status_code=404, detail="Consultorio not found")
     return consultorio
@@ -89,8 +94,8 @@ def delete_consultorio(
     """
     Delete an consultorio.
     """
-    consultorio = crud.consultorio.get(db=db, id=id)
+    consultorio = crud_consultorio.consultorio.get(db=db, id=id)
     if not consultorio:
         raise HTTPException(status_code=404, detail="Consultorio not found")
-    consultorio = crud.consultorio.remove(db=db, id=id)
+    consultorio = crud_consultorio.consultorio.remove(db=db, id=id)
     return consultorio

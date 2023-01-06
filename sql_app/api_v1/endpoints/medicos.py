@@ -32,6 +32,9 @@ def create_medico(
     """
     Create new medico.
     """
+    medico = crud_medico.medico.get(db=db, id=medico_in.id)
+    if medico:
+        raise HTTPException(status_code=409, detail="Medico already exists")
     medico = crud_medico.medico.create(db=db, obj_in=medico_in)
     return medico
 

@@ -58,10 +58,6 @@ registro_consultorios_ejemplo = [
     {'id_consultorio': 2, 'id_medico': medicos__ejemplo[2]['id'], 'fecha': opening_timestamp + 1*tiempo_turno},
     {'id_consultorio': 3, 'id_medico': medicos__ejemplo[3]['id'], 'fecha': opening_timestamp + 2*tiempo_turno},
     {'id_consultorio': 4, 'id_medico': medicos__ejemplo[4]['id'], 'fecha': opening_timestamp + 3*tiempo_turno},
-    {'id_consultorio': 1, 'id_medico': medicos__ejemplo[2]['id'], 'fecha': opening_timestamp - datetime.timedelta(days=1) + 4*tiempo_turno},
-    {'id_consultorio': 2, 'id_medico': medicos__ejemplo[4]['id'], 'fecha': opening_timestamp - datetime.timedelta(days=1) + 5*tiempo_turno},
-    {'id_consultorio': 3, 'id_medico': medicos__ejemplo[3]['id'], 'fecha': opening_timestamp - datetime.timedelta(days=1) + 6*tiempo_turno},
-    {'id_consultorio': 4, 'id_medico': medicos__ejemplo[1]['id'], 'fecha': opening_timestamp - datetime.timedelta(days=1) + 7*tiempo_turno},
 ]
 
 # En las 2 siguientes listas, hacer rejuntar los ejemplos y sus modelos base
@@ -70,8 +66,8 @@ ejemplos = [
     medicos__ejemplo,
     pacientes__ejemplo,
     recepcionistas__ejemplo,
+    registro_consultorios_ejemplo,
     turnos__ejemplo,
-    registro_consultorios_ejemplo
 ]
 
 modelos_base = [
@@ -79,6 +75,6 @@ modelos_base = [
     models.Medico,
     models.Paciente,
     models.Recepcionista,
+    models.RegistroConsultorios,
     models.Turno,
-    models.RegistroConsultorios
 ]

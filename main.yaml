@@ -1,0 +1,27 @@
+name: Build and Deploy TypeScript Definitions
+
+on:
+  push:
+    branches: [ master ]  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        pip install openapi-codegen
+    - name: Generate TypeScript Definitions
+      run: |
+        openapi-codegen generate -i openapi.yml -o . --lang typescript-fetch
+    - name: Deploy TypeScript Definitions
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: type-defs
+        force: true
+        file: '*.d.ts'
+        commit_message: 'Regenerate TypeScript Definitions'
+        repository: 'front-end-repo'
+        owner: 'front-end-owner'

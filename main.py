@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from sql_app import crud, models, schemas
 
-from sql_app.crud import init_db
+from sql_app.crud.load_data import init_db, cargar_turnos_ejemplo
 from sql_app.api_v1.api import api_router
 from sql_app.database import engine
 from sql_app.deps import get_db
@@ -39,5 +39,9 @@ app.add_middleware(
 @app.get("/inicializar_db/")
 def inicializar_db(db: Session = Depends(get_db)):
     init_db(db=db)
+    
+@app.get("/cargar-turnos-ejemplo/")
+def inicializar_db(db: Session = Depends(get_db)):
+    cargar_turnos_ejemplo(db=db)
     
 
