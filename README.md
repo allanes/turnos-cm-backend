@@ -34,6 +34,8 @@ Para instalar el backend en su sistema, siga estos pasos:
 
 ## Actualización de la base de datos
 
+Estos pasos se deben seguir si hubo cambios en los modelos de la db.
+
 Para actualizar la base de datos (realizar migraciones), siga estos pasos:
 
 1. Detenga el servicio backend.
@@ -74,4 +76,8 @@ Luego, puede acceder a la documentación de la API en `http://localhost:8000/doc
 
 ## Carga de datos iniciales
 
-Para cargar datos iniciales en la base de datos, acceda a `http://localhost:8000/inicializar_db`.
+Para cargar datos iniciales en la base de datos ***vacía***, acceder a `http://localhost:8000/inicializar_db`.
+
+## Carga de turnos del día
+
+Si se desea usar la db, cada nuevo día se deben cargar turnos. Para cargar ejemplos del día, ir a `http://localhost:8000/cargar-turnos-ejemplo/`.
