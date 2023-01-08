@@ -32,7 +32,7 @@ def create_recepcionista(
     """
     Create new recepcionista.
     """
-    recepcionista = crud_recepcionista.recepcionista.get(db=db, obj_in=recepcionista_in.id)
+    recepcionista = crud_recepcionista.recepcionista.get(db=db, id=recepcionista_in.id)
     if recepcionista:
         raise HTTPException(status_code=409, detail="Recepcionist already exists")
     recepcionista = crud_recepcionista.recepcionista.create(db=db, obj_in=recepcionista_in)

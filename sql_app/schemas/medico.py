@@ -16,11 +16,14 @@ class MedicoBase(BaseModel):
 class MedicoCreate(MedicoBase):
     nombre: str
     apellido: str
-    activo = True
     
 # Properties to receive on item update    
-class MedicoUpdate(MedicoBase):
-    pass    
+class MedicoUpdate(BaseModel):
+    nombre: str
+    apellido: str
+    email: str
+    telefono: str
+    especialidad: str
 
 # Properties shared by models stored in DB
 class MedicoInDBBase(MedicoBase):
@@ -28,10 +31,7 @@ class MedicoInDBBase(MedicoBase):
     apellido: str
     email: str
     telefono: str
-    activo: bool
     especialidad: str
-    
-    turnos: list[Turno] = []
     
     class Config:
         orm_mode = True        
@@ -43,4 +43,7 @@ class Medico(MedicoInDBBase):
 
 # Properties stored in DB
 class MedicoInDB(MedicoInDBBase):
+    activo: bool
+    turnos: list[Turno] | None = None
     pass
+    

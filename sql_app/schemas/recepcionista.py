@@ -17,8 +17,11 @@ class RecepcionistaCreate(RecepcionistaBase):
     apellido: str
     
 # Properties to receive on item update    
-class RecepcionistaUpdate(RecepcionistaBase):
-    pass    
+class RecepcionistaUpdate(BaseModel):
+    nombre: str
+    apellido: str
+    email: str
+    telefono: str    
 
 # Properties shared by models stored in DB
 class RecepcionistaInDBBase(RecepcionistaBase):

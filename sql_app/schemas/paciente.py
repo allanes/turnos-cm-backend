@@ -17,8 +17,11 @@ class PacienteCreate(PacienteBase):
     apellido: str
     
 # Properties to receive on item update    
-class PacienteUpdate(PacienteBase):
-    pass    
+class PacienteUpdate(BaseModel):
+    nombre: str
+    apellido: str
+    email: str
+    telefono: str
 
 # Properties shared by models stored in DB
 class PacienteInDBBase(PacienteBase):
@@ -26,8 +29,6 @@ class PacienteInDBBase(PacienteBase):
     apellido: str
     email: str
     telefono: str
-    
-    turnos: list[Turno] = []
     
     class Config:
         orm_mode = True        
@@ -39,4 +40,5 @@ class Paciente(PacienteInDBBase):
 
 # Properties stored in DB
 class PacienteInDB(PacienteInDBBase):
+    turnos: list[Turno] = []
     pass

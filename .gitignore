@@ -131,3 +131,4 @@ node_modules
 package-lock.json
 package.json
 .vscode/settings.json
+sql_app/tests

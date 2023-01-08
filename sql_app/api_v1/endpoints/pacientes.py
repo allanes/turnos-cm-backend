@@ -56,7 +56,7 @@ def update_paciente(
     return paciente
 
 
-@router.get("/{id}", response_model=paciente.Paciente)
+@router.get("/{id}", response_model=paciente.PacienteInDB)
 def read_paciente(
     *,
     db: Session = Depends(deps.get_db),

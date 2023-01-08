@@ -32,8 +32,8 @@ def create_medico(
     """
     Create new medico.
     """
-    medico = crud_medico.medico.get(db=db, id=medico_in.id)
-    if medico:
+    existe = crud_medico.medico.exists(db=db, id=medico_in.id)
+    if existe:
         raise HTTPException(status_code=409, detail="Medico already exists")
     medico = crud_medico.medico.create(db=db, obj_in=medico_in)
     return medico
@@ -49,8 +49,8 @@ def update_medico(
     """
     Update an medico.
     """
-    medico = crud_medico.medico.get(db=db, id=id)
-    if not medico:
+    existe = crud_medico.medico.exists(db=db, id=id)
+    if not existe:
         raise HTTPException(status_code=404, detail="Medico not found")
     medico = crud_medico.medico.update(db=db, db_obj=medico, obj_in=medico_in)
     return medico
