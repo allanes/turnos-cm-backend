@@ -40,10 +40,11 @@ class MedicoInDBBase(MedicoBase):
 class Medico(MedicoInDBBase):
     consultorio: Optional[str]
     
-
+class MedicoConTurnos(Medico):
+    turnos: list[Turno] = []
+    
 # Properties stored in DB
 class MedicoInDB(MedicoInDBBase):
     activo: bool
-    turnos: list[Turno] | None = None
-    pass
+    turnos: list[Turno] = []
     

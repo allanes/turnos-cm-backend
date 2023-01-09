@@ -52,11 +52,12 @@ def update_medico(
     existe = crud_medico.medico.exists(db=db, id=id)
     if not existe:
         raise HTTPException(status_code=404, detail="Medico not found")
-    medico = crud_medico.medico.update(db=db, db_obj=medico, obj_in=medico_in)
-    return medico
+    db_medico = crud.medico.get(db=db, id=id)
+    db_medico = crud_medico.medico.update(db=db, db_obj=db_medico, obj_in=medico_in)
+    return db_medico
 
 
-@router.get("/{id}", response_model=medico.Medico)
+@router.get("/{id}", response_model=medico.MedicoConTurnos)
 def read_medico(
     *,
     db: Session = Depends(deps.get_db),
@@ -65,7 +66,7 @@ def read_medico(
     """
     Get medico by ID.
     """
-    medico = crud_medico.medico.get(db=db, id=id)
+    medico = crud_medico.medico.get_with_turns(db=db, id=id)
     if not medico:
         raise HTTPException(status_code=404, detail="Medico not found")
     return medico
