@@ -55,7 +55,7 @@ Para actualizar la base de datos (realizar migraciones), siga estos pasos:
         ```
     - Linux:
         ```
-        rm -f sql_app/alembic/versions/*
+        rm -r sql_app/alembic/versions/*
         ```
 4. Vuelva a crear las revisiones de la base de datos ejecutando los siguientes comandos:
     ```
