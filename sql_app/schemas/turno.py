@@ -5,14 +5,14 @@ from pydantic import BaseModel
 
 # Shared properties
 class TurnoBase(BaseModel):
-    id_consultorio: int | None
     id_medico: int | None
+    id_paciente: int | None
     motivo_consulta: str | None
     
 # Properties to receive on item creation
 class TurnoCreate(TurnoBase):
-    id_consultorio: int
-    id_medico: int    
+    id_medico: int
+    id_paciente: int
     
 # Properties to receive on item update
 class TurnoUpdate(TurnoBase):
@@ -24,9 +24,6 @@ class TurnoInDBBase(TurnoBase):
     pendiente: bool
     fecha: datetime
 
-    # paciente: Paciente
-    # medicos: list[Medico] = []
-
     class Config:
         orm_mode = True
         
@@ -36,4 +33,6 @@ class Turno(TurnoInDBBase):
 
 # Properties properties stored in DB
 class TurnoInDB(TurnoInDBBase):
+    # paciente: Paciente
+    # medicos: list[Medico] = []
     pass
