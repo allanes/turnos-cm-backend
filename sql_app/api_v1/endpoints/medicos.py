@@ -32,11 +32,21 @@ def create_medico(
     """
     Create new medico.
     """
-    existe = crud_medico.medico.exists(db=db, id=medico_in.id)
-    if existe:
-        raise HTTPException(status_code=409, detail="Medico already exists")
-    medico = crud_medico.medico.create(db=db, obj_in=medico_in)
-    return medico
+    db_medico = crud_medico.medico.get(db=db, id=medico_in.id)
+    if not db_medico:
+        db_medico = crud_medico.medico.create(db=db, obj_in=medico_in)
+    else:
+        if db_medico.activo:
+            raise HTTPException(status_code=409, detail="Medico already exists")
+        else:
+            print(f'entrando a actualizar el medico')
+            db_medico = crud_medico.medico.reactivate(
+                db=db, 
+                db_obj=db_medico, 
+                obj_in=medico_in
+            )
+        
+    return db_medico
 
 
 @router.put("/{id}", response_model=medico.Medico)

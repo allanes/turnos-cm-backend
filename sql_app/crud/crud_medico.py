@@ -88,5 +88,25 @@ class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
         db.commit()
         db.refresh(db_obj)
         return db_obj
+    
+    def reactivate(self,
+        db: Session,
+        *,
+        db_obj: Medico,
+        obj_in: Medico | dict[str, Any]
+    ):
+        if isinstance(obj_in, dict):
+            medico_in_dict = obj_in
+        else:
+            medico_in_dict = obj_in.dict()
+        
+        medico_in_dict['activo'] = True
+        print(f'datos del medico: {medico_in_dict}')
+        return super().update(
+            db=db, 
+            db_obj=db_obj, 
+            obj_in=medico_in_dict
+        )
+        
 
 medico = CRUDMedico(Medico)
