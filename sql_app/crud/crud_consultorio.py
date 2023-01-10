@@ -35,6 +35,7 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
             db_turnos = (
                 db.query(Turno)
                 .filter(func.date(Turno.fecha) == today)
+                .filter(Turno.pendiente == True)
                 .filter(Turno.id_medico==db_medico.id)
                 .order_by(Turno.fecha.asc())
                 .all()

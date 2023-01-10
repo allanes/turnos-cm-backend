@@ -64,7 +64,7 @@ class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
             .join(RegistroConsultorios)
             .filter(RegistroConsultorios.fecha >= today)
             .filter(RegistroConsultorios.id_medico == medico_id)
-            .order_by(RegistroConsultorios.fecha.desc())
+            .order_by(RegistroConsultorios.id.desc())
             .first()
         )
         return ultimo_consultorio.descripcion if ultimo_consultorio else None
