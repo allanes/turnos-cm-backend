@@ -6,6 +6,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from sql_app.crud.base import CRUDBase
+from sql_app.crud import crud_consultorio, crud_registro_consultorios
 from sql_app.models import Consultorio, Medico, Paciente, RegistroConsultorios, Turno
 from sql_app.schemas.consultorio import ConsultorioCreate, ConsultorioUpdate, ConsultorioDetallado
 
@@ -19,14 +20,16 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
     def get_consultorios_detallados(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[ConsultorioDetallado]:
         today = datetime.now().date()
         
-        consultorios_activos = (
-            db.query(RegistroConsultorios)
-            .filter(func.date(RegistroConsultorios.fecha) == today)
-            .order_by(RegistroConsultorios.fecha.desc())
-            .distinct()
-            .offset(skip).limit(limit).all()
-        )
-        
+        # consultorios_activos = (
+        #     db.query(RegistroConsultorios)
+        #     .filter(func.date(RegistroConsultorios.fecha) >= today)
+        #     .group_by(RegistroConsultorios.id_consultorio)
+        #     .having(func.max(RegistroConsultorios.id) == RegistroConsultorios.id)
+        #     .order_by(RegistroConsultorios.fecha.desc())
+        #     .offset(skip).limit(limit).all()
+        # )
+        consultorios_activos = crud_registro_consultorios.registro_consultorios.get_multi(db=db)
+        print(f'consultorios activos: {[consultorio.id_consultorio for consultorio in consultorios_activos]}')
         consuls_salida = []
         for consultorio in consultorios_activos:
             db_medico = (db.query(Medico).where(Medico.id==consultorio.id_medico).first())
@@ -52,14 +55,16 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
                     nombres_pacientes.append(nombre_paciente)
             
             consul = super().get(db=db, id=consultorio.id_consultorio)
-            
-            consuls_salida.append(
-                ConsultorioDetallado(
+            if consul:
+                consul_nuevo = ConsultorioDetallado(
                     **consul.__dict__, 
                     medico=nombre_medico,
                     pacientes=nombres_pacientes
                 )
-            )
+            else:
+                consul_nuevo = None
+                
+            consuls_salida.append(consul_nuevo)
             
         return consuls_salida
         
