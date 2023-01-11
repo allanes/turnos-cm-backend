@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from sql_app.crud.base import CRUDBase
 from sql_app.crud import crud_consultorio, crud_registro_consultorios
 from sql_app.models import Consultorio, Medico, Paciente, RegistroConsultorios, Turno
-from sql_app.schemas.consultorio import ConsultorioCreate, ConsultorioUpdate, ConsultorioDetallado
+from sql_app.schemas.consultorio import ConsultorioCreate, ConsultorioUpdate, ConsultorioDetallado, Consultorio as ConsultorioSchema
 
 class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate]):
     def get_consultorios_por_sala(self, db: Session, sala:int, *, skip: int = 0, limit: int = 100) -> List[Consultorio]:
@@ -20,14 +20,6 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
     def get_consultorios_detallados(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[ConsultorioDetallado]:
         today = datetime.now().date()
         
-        # consultorios_activos = (
-        #     db.query(RegistroConsultorios)
-        #     .filter(func.date(RegistroConsultorios.fecha) >= today)
-        #     .group_by(RegistroConsultorios.id_consultorio)
-        #     .having(func.max(RegistroConsultorios.id) == RegistroConsultorios.id)
-        #     .order_by(RegistroConsultorios.fecha.desc())
-        #     .offset(skip).limit(limit).all()
-        # )
         consultorios_activos = crud_registro_consultorios.registro_consultorios.get_multi(db=db)
         print(f'consultorios activos: {[consultorio.id_consultorio for consultorio in consultorios_activos]}')
         consuls_salida = []
@@ -67,6 +59,22 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
             consuls_salida.append(consul_nuevo)
             
         return consuls_salida
+    
+    def create(self, db: Session, *, obj_in: ConsultorioCreate) -> Consultorio:
+        db_consultorios = super().get_multi(db=db)
+        cantidad_consuls = len(db_consultorios) if db_consultorios else 0
+        obj_in.numero = cantidad_consuls + 1
+        return super().create(db, obj_in=obj_in)
+    
+    def get_multi(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[ConsultorioSchema]:
+        db_consultorios = super().get_multi(db, skip=skip, limit=limit)
+        
+        consuls_out = [ConsultorioSchema(
+            **db_consultorio.__dict__,
+            descripcion=f'Consultorio {db_consultorio.numero}'
+        ) for db_consultorio in db_consultorios]
+        
+        return consuls_out
         
 
 consultorio = CRUDConsultorio(Consultorio)

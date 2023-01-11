@@ -9,11 +9,11 @@ tiempo_turno = datetime.timedelta(minutes=30)
 
 
 consultorios_ejemplo = [
-    {'numero': 1, 'sala': 1, 'descripcion': 'Consultorio 1-1'},
-    {'numero': 2, 'sala': 1, 'descripcion': 'Consultorio 2-1'},
-    {'numero': 3, 'sala': 2, 'descripcion': 'Consultorio 3-2'},
-    {'numero': 4, 'sala': 2, 'descripcion': 'Consultorio 4-2'},
-    {'numero': 5, 'sala': 1, 'descripcion': 'Consultorio 5-1'},
+    {'numero': 1, 'sala': 1},
+    {'numero': 2, 'sala': 1},
+    {'numero': 3, 'sala': 2},
+    {'numero': 4, 'sala': 2},
+    {'numero': 5, 'sala': 1},
 ]
 
 medicos__ejemplo = [

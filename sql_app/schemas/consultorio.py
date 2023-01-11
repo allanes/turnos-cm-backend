@@ -7,11 +7,9 @@ from pydantic import BaseModel
 class ConsultorioBase(BaseModel):
     numero: Optional[int]
     sala: Optional[int]
-    descripcion: Optional[str]
-    
+        
 # Properties to receive on item creation
 class ConsultorioCreate(ConsultorioBase):
-    numero: int
     sala: int
 
 # Properties to receive on item update    
@@ -24,15 +22,13 @@ class ConsultorioInDBBase(ConsultorioBase):
     id: int
     numero: int
     sala: int
-    descripcion: str
     
     class Config:
         orm_mode = True
-        
-
+    
 # Properties to return to client
 class Consultorio(ConsultorioInDBBase):
-    pass
+    descripcion: Optional[str]
     
 # Properties to return to client
 class ConsultorioDetallado(ConsultorioInDBBase):

@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from sql_app.crud.base import CRUDBase
 from sql_app.models import Medico, Consultorio, RegistroConsultorios, Turno
 from sql_app.schemas.medico import MedicoConTurnos, MedicoCreate, MedicoUpdate
+from sql_app.schemas.consultorio import Consultorio as ConsultorioSchema
 
 class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
     def exists(self, db: Session, id: Any) -> bool:
@@ -58,16 +59,17 @@ class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
         
     def get_ultimo_consultorio_by_medico(self, db: Session, medico_id: int) -> str:
         today = datetime.now().date()
-        # consultorios = db.query(models.Consultorio).join(models.RegistroConsultorios).filter(models.RegistroConsultorios.id_medico == medico_id).order_by(models.RegistroConsultorios.fecha.desc()).limit(5)
+        
         ultimo_consultorio = (
-            db.query(Consultorio.descripcion)
+            db.query(Consultorio.numero)
             .join(RegistroConsultorios)
             .filter(RegistroConsultorios.fecha >= today)
             .filter(RegistroConsultorios.id_medico == medico_id)
             .order_by(RegistroConsultorios.id.desc())
             .first()
         )
-        return ultimo_consultorio.descripcion if ultimo_consultorio else None
+        
+        return f'Consultorio {ultimo_consultorio[0]}' if ultimo_consultorio else None
 
     def update(
         self,

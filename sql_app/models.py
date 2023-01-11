@@ -46,7 +46,6 @@ class Consultorio(Base):
     id = Column(Integer, primary_key=True)
     numero = Column(Integer)
     sala = Column(Integer)
-    descripcion = Column(String)
     
 
 class RegistroConsultorios(Base):
