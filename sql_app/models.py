@@ -54,7 +54,7 @@ class RegistroConsultorios(Base):
     id = Column(Integer, primary_key=True)
     id_consultorio = Column(Integer, ForeignKey('consultorios.id'))
     id_medico = Column(Integer, ForeignKey('medicos.id'))
-    fecha = Column(DateTime, default=datetime.now())
+    fecha = Column(DateTime, default=lambda: datetime.now())
     
     
 class Turno(Base):
@@ -64,7 +64,7 @@ class Turno(Base):
     id_paciente = Column(Integer, ForeignKey('pacientes.id'))
     id_medico = Column(Integer, ForeignKey('medicos.id'))
     motivo_consulta = Column(String)
-    fecha = Column(DateTime, default=datetime.now())
+    fecha = Column(DateTime, default=lambda: datetime.now())
     pendiente = Column(Boolean, default=True)
     
     paciente = relationship(Paciente, back_populates='turnos')
