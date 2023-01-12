@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from sql_app.schemas import consultorio
@@ -13,14 +13,20 @@ router = APIRouter()
 
 @router.get("/with-details", response_model=List[consultorio.ConsultorioDetallado])
 def read_consultorios_con_detalles(
+    *,
     db: Session = Depends(deps.get_db),
+    sala: int = 0,
     skip: int = 0,
     limit: int = 100,
 ) -> Any:
     """
     Retrieve consultorios.
     """
-    consultorios = crud_consultorio.consultorio.get_consultorios_detallados(db, skip=skip, limit=limit)
+    if sala > 2:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La sala debe ser 1, 2 ó 0 para ver todas")
+    
+    consultorios = crud_consultorio.consultorio.get_consultorios_detallados(db, sala=sala,skip=skip, limit=limit)
+    
     return consultorios
 
 @router.get("/", response_model=List[consultorio.Consultorio])

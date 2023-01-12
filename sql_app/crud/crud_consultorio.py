@@ -17,13 +17,17 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
         return db_consultorios
     
     
-    def get_consultorios_detallados(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[ConsultorioDetallado]:
+    def get_consultorios_detallados(self, db: Session, sala = 0, *, skip: int = 0, limit: int = 100) -> List[ConsultorioDetallado]:
         today = datetime.now().date()
         
         consultorios_activos = crud_registro_consultorios.registro_consultorios.get_multi(db=db)
         print(f'consultorios activos: {[consultorio.id_consultorio for consultorio in consultorios_activos]}')
         consuls_salida = []
         for consultorio in consultorios_activos:
+            consul = super().get(db=db, id=consultorio.id_consultorio)
+            
+            if consul and sala and consul.sala != sala: continue
+            
             db_medico = (db.query(Medico).where(Medico.id==consultorio.id_medico).first())
             nombre_medico = f'{db_medico.apellido} {db_medico.nombre}' if db_medico else None
             
@@ -46,7 +50,6 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
                     nombre_paciente = f'{db_paciente.apellido} {db_paciente.nombre}' if db_paciente else None
                     nombres_pacientes.append(nombre_paciente)
             
-            consul = super().get(db=db, id=consultorio.id_consultorio)
             if consul:
                 consul_nuevo = ConsultorioDetallado(
                     **consul.__dict__, 
