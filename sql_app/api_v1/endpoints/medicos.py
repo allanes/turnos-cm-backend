@@ -3,8 +3,8 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from sql_app.schemas import medico
-from sql_app.crud import crud_medico
+from sql_app.schemas import medico, turno
+from sql_app.crud import crud_medico, crud_turno
 from sql_app import crud, models, schemas
 from sql_app import deps
 
@@ -96,3 +96,28 @@ def delete_medico(
         raise HTTPException(status_code=404, detail="Medico not found")
     medico = crud_medico.medico.remove(db=db, id=id)
     return medico
+
+@router.get("/{id}/next", response_model=turno.Turno)
+def next_turn(
+    *,
+    db: Session = Depends(deps.get_db),
+    id: int,
+) -> Any:
+    """
+    Delete an medico.
+    """
+    db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
+    if not db_medico:
+        raise HTTPException(status_code=404, detail="Medico not found")
+    if not db_medico.turnos:
+        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")
+    
+    db_turno = crud_turno.turno.get(db=db, id=db_medico.turnos[0].id)
+    db_turno = crud_turno.turno.update(
+        db=db, 
+        db_obj=db_turno,
+        obj_in={'pendiente': False}
+    )
+    print(f'turnos: {db_turno}')
+    return db_turno
+    
