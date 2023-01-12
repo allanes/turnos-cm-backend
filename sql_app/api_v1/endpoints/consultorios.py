@@ -15,13 +15,15 @@ router = APIRouter()
 def read_consultorios_con_detalles(
     *,
     db: Session = Depends(deps.get_db),
-    sala: int = 0,
+    sala: str = '0',
     skip: int = 0,
     limit: int = 100,
 ) -> Any:
     """
     Retrieve consultorios.
     """
+    sala = int(sala)
+    
     if sala > 2:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La sala debe ser 1, 2 ó 0 para ver todas")
     
