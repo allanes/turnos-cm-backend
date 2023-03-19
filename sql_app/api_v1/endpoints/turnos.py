@@ -23,10 +23,10 @@ def read_turnos(
     return turnos
 
 
-@router.post("/", response_model=turno.Turno)
-def create_turno(
+# @router.post("/", response_model=turno.Turno)
+async def create_turno(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session,# = Depends(deps.get_db),
     turno_in: turno.TurnoCreate,
 ) -> Any:
     """
@@ -75,7 +75,7 @@ def read_turno(
     return turno
 
 
-@router.delete("/{id}", response_model=turno.Turno)
+# @router.delete("/{id}", response_model=turno.Turno)
 def delete_turno(
     *,
     db: Session = Depends(deps.get_db),
