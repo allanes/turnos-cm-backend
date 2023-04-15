@@ -97,10 +97,10 @@ def delete_medico(
     medico = crud_medico.medico.remove(db=db, id=id)
     return medico
 
-@router.get("/{id}/next", response_model=turno.Turno)
-def next_turn(
+# @router.get("/{id}/next", response_model=turno.Turno)
+async def next_turn(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session, # = Depends(deps.get_db),
     id: int,
 ) -> Any:
     """

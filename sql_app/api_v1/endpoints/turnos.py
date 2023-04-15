@@ -23,23 +23,27 @@ def read_turnos(
     return turnos
 
 
-@router.post("/", response_model=turno.Turno)
-def create_turno(
+# @router.post("/", response_model=turno.Turno)
+async def create_turno(
     *,
-    db: Session = Depends(deps.get_db),
+    db: Session,# = Depends(deps.get_db),
     turno_in: turno.TurnoCreate,
 ) -> Any:
     """
     Create new turno.
     """
     db_paciente = crud.paciente.get(db=db, id=turno_in.id_paciente)
+    
     if not db_paciente:
         raise HTTPException(status_code=404, detail="Paciente not found")
+    
     db_medico = crud.medico.get(db=db, id=turno_in.id_medico)
+    
     if not db_medico:
         raise HTTPException(status_code=404, detail="Medico not found")
     
     turno = crud_turno.turno.create(db=db, obj_in=turno_in)
+
     return turno
 
 

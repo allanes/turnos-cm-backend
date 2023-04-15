@@ -22,8 +22,7 @@ def read_consultorios_con_detalles(
     """
     Retrieve consultorios.
     """
-    sala = int(sala)
-    
+    sala = int(sala) if sala.isdigit() else 0
     if sala > 2:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La sala debe ser 1, 2 ó 0 para ver todas")
     
