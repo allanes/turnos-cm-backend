@@ -33,13 +33,17 @@ async def create_turno(
     Create new turno.
     """
     db_paciente = crud.paciente.get(db=db, id=turno_in.id_paciente)
+    
     if not db_paciente:
         raise HTTPException(status_code=404, detail="Paciente not found")
+    
     db_medico = crud.medico.get(db=db, id=turno_in.id_medico)
+    
     if not db_medico:
         raise HTTPException(status_code=404, detail="Medico not found")
     
     turno = crud_turno.turno.create(db=db, obj_in=turno_in)
+
     return turno
 
 
@@ -75,7 +79,7 @@ def read_turno(
     return turno
 
 
-# @router.delete("/{id}", response_model=turno.Turno)
+@router.delete("/{id}", response_model=turno.Turno)
 def delete_turno(
     *,
     db: Session = Depends(deps.get_db),

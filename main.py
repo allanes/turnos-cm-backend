@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from sql_app import crud, models, schemas
 from sql_app.api_v1.endpoints.turnos import create_turno, delete_turno
+from sql_app.api_v1.endpoints.medicos import next_turn
 
 from sql_app.crud.load_data import init_db, cargar_turnos_ejemplo
 from sql_app.api_v1.api import api_router
@@ -39,7 +40,7 @@ app.add_middleware(
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    # allow_headers=["*"],
+    allow_headers=["*"],
 )
 
 @app.get("/inicializar_db/")
@@ -55,20 +56,34 @@ async def handle_create_turno(
     *,
     db: Session = Depends(get_db),
     turno_in: schemas.turno.TurnoCreate,
-    skip: int = 0,
-    limit: int = 100,
 ) -> Any:
     print('Creando turno')
     turno_creado = await create_turno(db=db, turno_in=turno_in)
-    
+    print('Creando turno')
+
     print('Emitiendo evento refresh')
-    await sio.emit('refresh', 'refresh', broadcast=True)
-    print('Evento emitido')
-    print("Active connections:", sio.manager.rooms)
+    await sio.emit('refresh', 'refresh')
+    print('Evento refresh emitido')
+    
     return turno_creado
+
+@app.get("/api/v1/doctors/{id}/next", response_model=schemas.turno.Turno)
+async def handle_next_turn(
+    *,
+    db: Session = Depends(get_db),
+    id: int,
+) -> Any:
+    
+    turno_atendido = await next_turn(db=db, id=id)
+
+    print('Emitiendo evento refresh')
+    await sio.emit('refresh', 'refresh')
+    print('Evento refresh emitido')
+    
+    return turno_atendido
 
 app = ASGIApp(sio, app)
     
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, port=8000, host="127.0.0.1")
+    uvicorn.run(app, port=8000, host="0.0.0.0")
