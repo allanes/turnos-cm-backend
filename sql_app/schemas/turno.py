@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 # from sql_app.schemas import Medico, Paciente
 
 # Shared properties
@@ -29,7 +29,12 @@ class TurnoInDBBase(TurnoBase):
         
 # Properties to return to client
 class Turno(TurnoInDBBase):
-    pass
+    @validator('fecha', always=True)
+    def format_date(cls, v):
+        if v:
+            return v.strftime('%H:%M | %d-%m-%Y')
+        return None
+    
 
 # Properties properties stored in DB
 class TurnoInDB(TurnoInDBBase):
