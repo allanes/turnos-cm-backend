@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from sql_app import crud, models, schemas
 from sql_app.api_v1.endpoints.turnos import create_turno, delete_turno
-from sql_app.api_v1.endpoints.medicos import next_turn
+from sql_app.api_v1.endpoints.medicos import next_turn, previous_turn
 
 from sql_app.crud.load_data import init_db, cargar_turnos_ejemplo
 from sql_app.api_v1.api import api_router
@@ -67,7 +67,7 @@ async def handle_create_turno(
     
     return turno_creado
 
-@app.get("/api/v1/doctors/{id}/next", response_model=schemas.turno.Turno)
+@app.get("/api/v1/doctors/{id}/nextPatient", response_model=schemas.turno.Turno)
 async def handle_next_turn(
     *,
     db: Session = Depends(get_db),
@@ -81,6 +81,22 @@ async def handle_next_turn(
     print('Evento refresh emitido')
     
     return turno_atendido
+
+@app.get("/api/v1/doctors/{id}/previousPatient", response_model=schemas.turno.Turno)
+async def handle_next_turn(
+    *,
+    db: Session = Depends(get_db),
+    id: int,
+) -> Any:
+    
+    turno_anterior = await previous_turn(db=db, id=id)
+
+    print('Emitiendo evento refresh')
+    await sio.emit('refresh', 'refresh')
+    print('Evento refresh emitido')
+    
+    return turno_anterior
+
 
 app = ASGIApp(sio, app)
     

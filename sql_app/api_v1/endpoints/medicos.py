@@ -113,11 +113,34 @@ async def next_turn(
         raise HTTPException(status_code=404, detail="El Medico no tiene turnos")
     
     db_turno = crud_turno.turno.get(db=db, id=db_medico.turnos[0].id)
+    
     db_turno = crud_turno.turno.update(
         db=db, 
         db_obj=db_turno,
         obj_in={'pendiente': False}
     )
-    print(f'turnos: {db_turno}')
+
     return db_turno
     
+async def previous_turn(
+    *,
+    db: Session, # = Depends(deps.get_db),
+    id: int,
+) -> Any:
+    """
+    Delete an medico.
+    """
+    db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
+    
+    if not db_medico:
+        raise HTTPException(status_code=404, detail="Medico not found")
+    
+    ultimo_turno = crud_medico.medico.get_ultimo_turno_atendido(db=db, medico_id=id)
+
+    ultimo_turno = crud_turno.turno.update(
+        db=db, 
+        db_obj=ultimo_turno,
+        obj_in={'pendiente': True}
+    )
+    
+    return ultimo_turno
