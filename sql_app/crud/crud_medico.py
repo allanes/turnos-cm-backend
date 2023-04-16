@@ -70,6 +70,18 @@ class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
         )
         
         return f'Consultorio {ultimo_consultorio[0]}' if ultimo_consultorio else None
+    
+    def get_ultimo_turno_atendido(self, db: Session, medico_id: int) -> Turno:
+        
+        ultimo_turno = (
+            db.query(Turno)
+            .filter(Turno.pendiente==False)
+            .filter(Turno.id_medico == medico_id)
+            .order_by(Turno.fecha.desc())
+            .first()
+        )
+        # print(f'tipo de turno: {type(ultimo_turno[0])}')
+        return ultimo_turno
 
     def update(
         self,
