@@ -1,5 +1,5 @@
-from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
+from datetime import datetime, date
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean, Date
 from sqlalchemy.orm import relationship
 from .database import Base
     
@@ -10,6 +10,7 @@ class Paciente(Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
     nombre = Column(String)
     apellido = Column(String)
+    fecha_nacimiento = Column(Date, default=lambda:datetime.now().date())
     email = Column(String)
     telefono = Column(String)
     
