@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator,root_validator
 # from sql_app.schemas import Medico, Paciente
 
 # Shared properties
@@ -29,6 +29,22 @@ class TurnoInDBBase(TurnoBase):
         
 # Properties to return to client
 class Turno(TurnoInDBBase):
+    nombre_medico: str | None
+    nombre_paciente: str | None
+
+    @root_validator(pre=True)
+    def calculate_derived_fields(cls, values):
+        medico = values.get("medico")
+        paciente = values.get("paciente")
+
+        ret = dict(values)
+        if medico:
+            ret["nombre_medico"] = f"{medico.apellido}, {medico.nombre}"
+        if paciente:
+            ret["nombre_paciente"] = f"{paciente.apellido}, {paciente.nombre}"
+
+        return ret
+
     @validator('fecha', always=True)
     def format_date(cls, v):
         if v:
