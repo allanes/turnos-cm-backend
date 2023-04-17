@@ -25,14 +25,14 @@ medicos__ejemplo = [
 ]
 
 pacientes__ejemplo = [
-    {'id': 23456789, 'nombre': 'Carlos', 'apellido': 'Sánchez', 'email': 'carlos@gmail.com', 'telefono': '111-222-444'},
-    {'id': 23456790, 'nombre': 'María', 'apellido': 'Rodríguez', 'email': 'maria@gmail.com', 'telefono': '111-222-445'},
-    {'id': 23456791, 'nombre': 'Jorge', 'apellido': 'González', 'email': 'jorge@gmail.com', 'telefono': '111-222-446'},
-    {'id': 23456792, 'nombre': 'Laura', 'apellido': 'Pérez', 'email': 'laura@gmail.com', 'telefono': '111-222-447'},
-    {'id': 23456793, 'nombre': 'Roberto', 'apellido': 'Gómez', 'email': 'roberto@gmail.com', 'telefono': '111-222-448'},
-    {'id': 23456794, 'nombre': 'Sandra', 'apellido': 'Martínez', 'email': 'sandra@gmail.com', 'telefono': '111-222-449'},
-    {'id': 23456795, 'nombre': 'Javier', 'apellido': 'Fernández', 'email': 'javier@gmail.com', 'telefono': '111-222-450'},
-    {'id': 23456796, 'nombre': 'Pablo', 'apellido': 'Muñoz', 'email': 'pablo@gmail.com', 'telefono': '111-222-451'},
+    {'id': 23456789, 'nombre': 'Carlos', 'apellido': 'Sánchez', 'fecha_nacimiento': datetime.date(1990,1,21), 'email': 'carlos@gmail.com', 'telefono': '111-222-444'},
+    {'id': 23456790, 'nombre': 'María', 'apellido': 'Rodríguez', 'fecha_nacimiento': datetime.date(1992,2,21), 'email': 'maria@gmail.com', 'telefono': '111-222-445'},
+    {'id': 23456791, 'nombre': 'Jorge', 'apellido': 'González', 'fecha_nacimiento': datetime.date(1990,4,23), 'email': 'jorge@gmail.com', 'telefono': '111-222-446'},
+    {'id': 23456792, 'nombre': 'Laura', 'apellido': 'Pérez', 'fecha_nacimiento': datetime.date(1955,4,25), 'email': 'laura@gmail.com', 'telefono': '111-222-447'},
+    {'id': 23456793, 'nombre': 'Roberto', 'apellido': 'Gómez', 'fecha_nacimiento': datetime.date(1977,8,31), 'email': 'roberto@gmail.com', 'telefono': '111-222-448'},
+    {'id': 23456794, 'nombre': 'Sandra', 'apellido': 'Martínez', 'fecha_nacimiento': datetime.date(1987,12,21), 'email': 'sandra@gmail.com', 'telefono': '111-222-449'},
+    {'id': 23456795, 'nombre': 'Javier', 'apellido': 'Fernández', 'fecha_nacimiento': datetime.date(1999,6,20), 'email': 'javier@gmail.com', 'telefono': '111-222-450'},
+    {'id': 23456796, 'nombre': 'Pablo', 'apellido': 'Muñoz', 'fecha_nacimiento': datetime.date(1990,1,1), 'email': 'pablo@gmail.com', 'telefono': '111-222-451'},
 ]
 
 recepcionistas__ejemplo = [
