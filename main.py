@@ -51,7 +51,7 @@ def inicializar_db(db: Session = Depends(get_db)):
 def inicializar_db(db: Session = Depends(get_db)):
     cargar_turnos_ejemplo(db=db)
 
-@app.post("/api/v1/turns/", response_model=schemas.turno.Turno)
+@app.post("/api/v1/turns/", response_model=schemas.turno.Turno, tags=["Turnos"])
 async def handle_create_turno(
     *,
     db: Session = Depends(get_db),
@@ -67,7 +67,7 @@ async def handle_create_turno(
     
     return turno_creado
 
-@app.get("/api/v1/doctors/{id}/nextPatient", response_model=schemas.turno.Turno)
+@app.get("/api/v1/doctors/{id}/nextPatient", response_model=schemas.turno.Turno, tags=["Pacientes"])
 async def handle_next_turn(
     *,
     db: Session = Depends(get_db),
@@ -82,7 +82,7 @@ async def handle_next_turn(
     
     return turno_atendido
 
-@app.get("/api/v1/doctors/{id}/previousPatient", response_model=schemas.turno.Turno)
+@app.get("/api/v1/doctors/{id}/previousPatient", response_model=schemas.turno.Turno, tags=["Medicos"])
 async def handle_next_turn(
     *,
     db: Session = Depends(get_db),
