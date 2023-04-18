@@ -67,7 +67,7 @@ async def handle_create_turno(
     
     return turno_creado
 
-@app.get("/api/v1/doctors/{id}/nextPatient", response_model=schemas.turno.Turno, tags=["Pacientes"])
+@app.get("/api/v1/doctors/{id}/nextPatient", response_model=schemas.turno.Turno, tags=["Medicos"])
 async def handle_next_turn(
     *,
     db: Session = Depends(get_db),
