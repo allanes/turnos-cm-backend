@@ -45,11 +45,11 @@ class Turno(TurnoInDBBase):
 
         return ret
 
-    @validator('fecha', always=True)
-    def format_date(cls, v):
-        if v:
-            return v.strftime('%H:%M | %d-%m-%Y')
-        return None
+    class Config:
+        orm_mode = True
+        json_encoders = {
+            datetime: lambda dt: dt.strftime('%H:%M | %d-%m-%Y')
+        }
     
 
 # Properties properties stored in DB
