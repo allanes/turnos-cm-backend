@@ -83,7 +83,7 @@ async def handle_next_turn(
     return turno_atendido
 
 @app.get("/api/v1/doctors/{id}/previousPatient", response_model=schemas.turno.Turno, tags=["Medicos"])
-async def handle_next_turn(
+async def handle_previous_turn(
     *,
     db: Session = Depends(get_db),
     id: int,
