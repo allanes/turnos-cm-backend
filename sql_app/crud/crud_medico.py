@@ -1,6 +1,7 @@
 from typing import Any
 from datetime import datetime
 
+from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
@@ -16,8 +17,11 @@ class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
     
     def get_with_turns(self, db: Session, id: Any) -> MedicoConTurnos | None:
         today = datetime.now().date()
-        db_medico = db.query(self.model).filter(self.model.id == id).first()
+        db_medico = db.query(self.model).filter(self.model.id == id, self.model.activo == True).first()
+        if not db_medico:
+            raise HTTPException(status_code=404, detail="Medico not found")
         ultimo_consultorio = self.get_ultimo_consultorio_by_medico(db=db, medico_id=db_medico.id)
+        print(f'ultimo consultorio para medico {db_medico.nombre}: {ultimo_consultorio}')
         turnos = db.query(Turno).filter(
             Turno.pendiente==True,
             Turno.fecha >= today,
@@ -61,8 +65,8 @@ class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
         today = datetime.now().date()
         
         ultimo_consultorio = (
-            db.query(Consultorio.numero)
-            .join(RegistroConsultorios)
+            db.query(Consultorio.numero, RegistroConsultorios.fecha)
+            .join(RegistroConsultorios, Consultorio.id == RegistroConsultorios.id_consultorio)
             .filter(RegistroConsultorios.fecha >= today)
             .filter(RegistroConsultorios.id_medico == medico_id)
             .order_by(RegistroConsultorios.id.desc())

@@ -6,7 +6,7 @@ from sqlalchemy import distinct, exists, func
 from sqlalchemy.orm import Session
 
 from sql_app.crud.base import CRUDBase
-from sql_app.models import RegistroConsultorios
+from sql_app.models import RegistroConsultorios, Medico
 from sql_app.schemas.registro_consultorios import RegistroConsultoriosCreate, RegistroConsultoriosUpdate
 
 class CRUDRegistroConsultorios(CRUDBase[RegistroConsultorios, RegistroConsultoriosCreate, RegistroConsultoriosUpdate]):        
@@ -14,6 +14,8 @@ class CRUDRegistroConsultorios(CRUDBase[RegistroConsultorios, RegistroConsultori
         today = datetime.now().date()
         subquery = (
             db.query(distinct(RegistroConsultorios.id_medico))
+            .join(Medico)
+            .filter(Medico.activo==True)
             .filter(RegistroConsultorios.fecha >= today)
             .group_by(RegistroConsultorios.id_consultorio)
             .having(func.max(RegistroConsultorios.id) == RegistroConsultorios.id)
