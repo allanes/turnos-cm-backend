@@ -57,7 +57,7 @@ registro_consultorios_ejemplo = [
     {'id_consultorio': 1, 'id_medico': medicos__ejemplo[1]['id'], 'fecha': opening_timestamp + 0*tiempo_turno},
     {'id_consultorio': 2, 'id_medico': medicos__ejemplo[2]['id'], 'fecha': opening_timestamp + 1*tiempo_turno},
     {'id_consultorio': 3, 'id_medico': medicos__ejemplo[3]['id'], 'fecha': opening_timestamp + 2*tiempo_turno},
-    {'id_consultorio': 4, 'id_medico': medicos__ejemplo[4]['id'], 'fecha': opening_timestamp + 3*tiempo_turno},
+    {'id_consultorio': 4, 'id_medico': medicos__ejemplo[0]['id'], 'fecha': opening_timestamp + 3*tiempo_turno},
 ]
 
 # En las 2 siguientes listas, hacer rejuntar los ejemplos y sus modelos base
