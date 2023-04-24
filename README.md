@@ -94,6 +94,10 @@ sudo bash setup_services.sh
 
 2. Copiar el script "abrir_teles.sh" al escritorio.
 
+3. Sin maximizar, abrir chrome y arrastrarlo hacia la pantalla mas incómoda. Cerrarlo
+
+4. Repetir paso 3 con firefox.
+
 3. Reiniciar y comprobar que los servicios se iniciaron automaticamente.
 
 ### Abrir vista de Televisores
