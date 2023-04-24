@@ -87,16 +87,20 @@ Si se desea usar la db, cada nuevo día se deben cargar turnos. Para cargar ejem
 Para automatizar el inicio de los servicios de backend y frontend en el sistema operativo (Ubuntu):
 
 1. Ejecutar el archivo `setup_services.sh` desde la carpeta:
-```
-cd scripts
-sudo bash setup_services.sh
-```
+    ```
+    cd scripts
+    sudo bash setup_services.sh
+    ```
 
 2. Copiar el script "abrir_teles.sh" al escritorio.
 
-3. Sin maximizar, abrir chrome y arrastrarlo hacia la pantalla mas incómoda. Cerrarlo
+3. Sin maximizar, abrir chrome y arrastrarlo hacia la pantalla mas incómoda. 
 
-4. Repetir paso 3 con firefox.
+4. Configurarlo para que abra por defecto la direccion de esa sala.
+
+5. Cerrarlo
+
+4. Repetir pasos 3-5 con firefox.
 
 3. Reiniciar y comprobar que los servicios se iniciaron automaticamente.
 
