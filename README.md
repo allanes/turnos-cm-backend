@@ -81,3 +81,21 @@ Para cargar datos iniciales en la base de datos ***vacía***, acceder a `http://
 ## Carga de turnos del día
 
 Si se desea usar la db, cada nuevo día se deben cargar turnos. Para cargar ejemplos del día, ir a `http://localhost:8000/cargar-turnos-ejemplo/`.
+
+## Automatización
+
+Para automatizar el inicio de los servicios de backend y frontend en el sistema operativo (Ubuntu):
+
+1. Ejecutar el archivo `setup_services.sh` desde la carpeta:
+```
+cd scripts
+sudo bash setup_services.sh
+```
+
+2. Copiar el script "abrir_teles.sh" al escritorio.
+
+3. Reiniciar y comprobar que los servicios se iniciaron automaticamente.
+
+### Abrir vista de Televisores
+
+1. En el escritorio, ejecutar el archivo "abrir_teles.sh".

@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Define the paths for your script files
-SCRIPTS_PATH="."
-RUN_SERVICES_SCRIPT="$SCRIPTS_PATH/iniciar_servicios.sh"
-OPEN_CHROME_WINDOWS_SCRIPT="$SCRIPTS_PATH/open_chrome_windows.sh"
+SCRIPTS_PATH="/home/ados/Desktop/Proyectos/Facu/turnos-cm-backend/scripts"
+RUN_BACKEND_SCRIPT="$SCRIPTS_PATH/linux_iniciar_backend.sh"
+RUN_FRONTEND_SCRIPT="$SCRIPTS_PATH/linux_iniciar_frontend.sh"
 
 # Replace 'your_user' with your Linux username
 USERNAME="ados"
 
 # Create the systemd service files
-cat << EOF | sudo tee /etc/systemd/system/run_services.service
+cat << EOF | sudo tee /etc/systemd/system/centro_medico_backend.service
 [Unit]
 Description=Run backend and frontend services
 
@@ -17,34 +17,31 @@ Description=Run backend and frontend services
 Type=simple
 User=$USERNAME
 WorkingDirectory=$SCRIPTS_PATH
-ExecStart=/bin/bash $RUN_SERVICES_SCRIPT
+ExecStart=/bin/bash $RUN_BACKEND_SCRIPT
 Restart=always
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=mdefault.target
 EOF
 
-cat << EOF | sudo tee /etc/systemd/system/open_chrome_windows.service
+# Create the systemd service files
+cat << EOF | sudo tee /etc/systemd/system/centro_medico_frontend.service
 [Unit]
-Description=Open Chrome windows on different screens
-After=run_services.service
+Description=Run backend and frontend services
 
 [Service]
 Type=simple
 User=$USERNAME
 WorkingDirectory=$SCRIPTS_PATH
-ExecStart=/bin/bash $OPEN_CHROME_WINDOWS_SCRIPT
+ExecStart=/bin/bash $RUN_FRONTEND_SCRIPT
 Restart=always
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
 
 # Enable and start the services
-sudo systemctl enable run_services.service
-sudo systemctl enable open_chrome_windows.service
+sudo systemctl enable centro_medico_backend.service
+sudo systemctl enable centro_medico_frontend.service
 
-sudo systemctl start run_services.service
-sudo systemctl start open_chrome_windows.service
-
-echo "Services have been created, enabled, and started."
+echo "Services have been created and enabled. Restart system to check startup."
