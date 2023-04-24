@@ -30,7 +30,7 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
             
             db_medico = (db.query(Medico).where(Medico.id==consultorio.id_medico).first())
             nombre_medico = f'{db_medico.apellido} {db_medico.nombre}' if db_medico else None
-            
+            if not nombre_medico: print(f'No se encontro el medico para el consultorio {consul}')
             db_turnos = (
                 db.query(Turno)
                 .filter(func.date(Turno.fecha) == today)
