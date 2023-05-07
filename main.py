@@ -15,6 +15,8 @@ from sql_app.servidor_socketio import sio
 from fastapi.routing import Mount
 from socketio import ASGIApp
 
+from fastapi.responses import FileResponse
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -42,6 +44,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+some_file_path = "notification3.wav"
+
+@app.get("/notification")
+async def main():
+    return FileResponse(some_file_path)
 
 @app.get("/inicializar_db/")
 def inicializar_db(db: Session = Depends(get_db)):
