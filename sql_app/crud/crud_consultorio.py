@@ -21,7 +21,6 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
         today = datetime.now().date()
         
         consultorios_activos = crud_registro_consultorios.registro_consultorios.get_multi(db=db)
-        print(f'consultorios activos: {[consultorio.id_consultorio for consultorio in consultorios_activos]}')
         consuls_salida = []
         for consultorio in consultorios_activos:
             consul = super().get(db=db, id=consultorio.id_consultorio)

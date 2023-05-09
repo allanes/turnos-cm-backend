@@ -132,3 +132,5 @@ package-lock.json
 package.json
 .vscode/settings.json
 sql_app/tests
+sql_app/alembic/versions/5d088e10e2ab_.py
+database.db

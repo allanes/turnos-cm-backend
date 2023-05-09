@@ -13,6 +13,7 @@ from sql_app.deps import get_db
 from fastapi.middleware.cors import CORSMiddleware
 from sql_app.servidor_socketio import sio
 from fastapi.routing import Mount
+from fastapi.responses import FileResponse
 from socketio import ASGIApp
 
 from fastapi.responses import FileResponse

@@ -1,10 +1,10 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from sql_app.schemas import medico, turno
-from sql_app.crud import crud_medico, crud_turno
+from sql_app.crud import crud_medico, crud_turno, crud_registro_consultorios, crud_consultorio
 from sql_app import crud, models, schemas
 from sql_app import deps
 
@@ -22,6 +22,40 @@ def read_medicos(
     medicos = crud_medico.medico.get_multi_with_consultory(db, skip=skip, limit=limit)
     return medicos
 
+@router.get("/por-sala/{sala}", response_model=List[medico.MedicoConTurnos])
+def read_medicos_por_sala(
+    sala: str,
+    db: Session = Depends(deps.get_db),
+    skip: int = 0,
+    limit: int = 100,
+) -> Any:
+    """
+    Retrieve medicos.
+    """
+    sala = int(sala) if sala.isdigit() else None
+
+    if sala not in [1,2]:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La sala debe ser 1 o 2")
+    
+    lista_registros_consultorios = crud_registro_consultorios.registro_consultorios.get_multi(
+        db=db,        
+    )
+
+    lista_filtrada = []
+    for registro_consul in lista_registros_consultorios:
+        consul = crud_consultorio.consultorio.get(db=db, id=registro_consul.id_consultorio)
+        if consul.sala == sala:
+            lista_filtrada.append(registro_consul)
+
+    lista_registros_consultorios = lista_filtrada.copy()
+
+    medicos = []
+    for registro_consul in lista_registros_consultorios:
+        medicos.append(
+            crud_medico.medico.get_with_turns(db=db, id=registro_consul.id_medico)
+        )
+    
+    return medicos
 
 @router.post("/", response_model=medico.Medico)
 def create_medico(
