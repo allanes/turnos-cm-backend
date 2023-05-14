@@ -71,7 +71,7 @@ async def handle_create_turno(
     print('Creando turno')
 
     print('Emitiendo evento refresh')
-    await sio.emit('refresh', 'refresh')
+    await sio.emit('refresh', '1')
     print('Evento refresh emitido')
     
     return turno_creado
@@ -86,7 +86,7 @@ async def handle_next_turn(
     turno_atendido = await next_turn(db=db, id=id)
 
     print('Emitiendo evento refresh')
-    await sio.emit('refresh', 'refresh')
+    await sio.emit('refresh', '1')
     print('Evento refresh emitido')
     
     return turno_atendido
@@ -101,7 +101,7 @@ async def handle_previous_turn(
     turno_anterior = await previous_turn(db=db, id=id)
 
     print('Emitiendo evento refresh')
-    await sio.emit('refresh', 'refresh')
+    await sio.emit('refresh', '1')
     print('Evento refresh emitido')
     
     return turno_anterior
