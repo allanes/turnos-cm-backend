@@ -94,8 +94,17 @@ async def handle_next_turn(
     turno_atendido = await next_turn(db=db, id_medico=id)
     consultorio = crud.crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id)
     nro_consul = consultorio.split(' ')[1]
+
+    db_medico = crud.crud_medico.medico.get_with_turns(db=db, id=id)
+    
+    if not db_medico.turnos:
+        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")    
+    
+    prox_paciente = db_medico.turnos[0].nombre_paciente
+    print(f'Nombre del prox paciente: {prox_paciente}')
+    
     print(f'Emitiendo evento refresh para {consultorio}')
-    await sio.emit('refresh', nro_consul)
+    await sio.emit('refresh', f'{nro_consul};{prox_paciente}')
     print('Evento refresh emitido')
     
     return turno_atendido
@@ -111,8 +120,18 @@ async def handle_previous_turn(
 
     consultorio = crud.crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id)
     nro_consul = consultorio.split(' ')[1]
+
+    # 
+    db_medico = crud.crud_medico.medico.get_with_turns(db=db, id=id)
+    
+    if not db_medico.turnos:
+        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")    
+    
+    prev_paciente = db_medico.turnos[0].nombre_paciente
+    print(f'Nombre del prox paciente: {prev_paciente}')
+
     print(f'Emitiendo evento refresh para {consultorio}')
-    await sio.emit('refresh', nro_consul)
+    await sio.emit('refresh', f'{nro_consul};{prev_paciente}')
     print('Evento refresh emitido')
     
     return turno_anterior
