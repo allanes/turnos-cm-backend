@@ -94,7 +94,7 @@ Para automatizar el inicio de los servicios de backend y frontend en el sistema 
 
 2. Sin maximizar, abrir chrome y arrastrarlo hacia la pantalla mas incómoda. 
 
-3. Configurarlo para que abra por defecto la url de esa sala.
+3. Configurarlo para que abra por defecto la url de esa sala con todos los permisos necesarios.
 
 4. Cerrarlo
 
@@ -110,4 +110,4 @@ Para abrir las vistas de los televisores de todas las salas, usar desde cualquie
 
     http://{ip-servidor-backend}:8000/iniciar-vistas-teles
 
-NOTA: Revisar que en los televisores ya se ve el escritorio
+NOTA: Revisar que en los televisores ya se vea el escritorio
