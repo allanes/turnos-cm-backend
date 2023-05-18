@@ -10,7 +10,6 @@ from sql_app import deps
 
 router = APIRouter()
 
-
 @router.get("/with-details", response_model=List[consultorio.ConsultorioDetallado])
 def read_consultorios_con_detalles(
     *,
@@ -27,8 +26,6 @@ def read_consultorios_con_detalles(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="La sala debe ser 1, 2 ó 0 para ver todas")
     
     consultorios = crud_consultorio.consultorio.get_consultorios_detallados(db, sala=sala,skip=skip, limit=limit)
-    print('Consultorios detallados::')
-    print(consultorios)
     return consultorios
 
 @router.get("/", response_model=List[consultorio.Consultorio])

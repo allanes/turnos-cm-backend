@@ -1,5 +1,5 @@
-from datetime import date
-from pydantic import BaseModel
+from datetime import date, datetime
+from pydantic import BaseModel, validator
 from sql_app.schemas import Turno
 
 # Shared properties
@@ -15,7 +15,8 @@ class PacienteBase(BaseModel):
 class PacienteCreate(PacienteBase):
     nombre: str
     apellido: str
-    
+    fecha_nacimiento: str | None
+
 # Properties to receive on item update    
 class PacienteUpdate(BaseModel):
     nombre: str
@@ -37,7 +38,11 @@ class PacienteInDBBase(PacienteBase):
 
 # Properties to return to client
 class Paciente(PacienteInDBBase):
-    pass
+    class Config:
+        orm_mode = True
+        json_encoders = {
+            datetime: lambda dt: dt.strftime('%d-%m-%Y')
+        }
 
 
 # Properties stored in DB

@@ -33,7 +33,7 @@ class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
             turnos=turnos
         )
         return medico_out
-        
+
     def get_multi_with_consultory(
         self, db: Session, *, skip: int = 0, limit: int = 100
     ) -> list[Medico]:

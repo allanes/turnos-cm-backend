@@ -1,5 +1,7 @@
+import os
+import subprocess
 from typing import Any
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from sql_app import crud, models, schemas
@@ -13,11 +15,14 @@ from sql_app.deps import get_db
 from fastapi.middleware.cors import CORSMiddleware
 from sql_app.servidor_socketio import sio
 from fastapi.routing import Mount
+from fastapi.responses import FileResponse
 from socketio import ASGIApp
 
 from fastapi.responses import FileResponse
+os.environ['DISPLAY'] = ':0'
 
 models.Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI(
     title='Administración de Turnos - Centro Médico Esperanza',
@@ -67,11 +72,15 @@ async def handle_create_turno(
 ) -> Any:
     print('Creando turno')
     turno_creado = await create_turno(db=db, turno_in=turno_in)
-    print('Creando turno')
-
-    print('Emitiendo evento refresh')
-    await sio.emit('refresh', 'refresh')
-    print('Evento refresh emitido')
+    
+    
+    # consultorio = crud.crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=turno_creado.id_medico)
+    # nro_consul = consultorio.split(' ')[1]
+    # print(f'Emitiendo evento refresh para {consultorio}')
+    # await sio.emit('refresh', nro_consul)
+    # print('Emitiendo evento refresh')
+    # await sio.emit('turn-created', '1')
+    # print('Evento refresh emitido')
     
     return turno_creado
 
@@ -82,10 +91,11 @@ async def handle_next_turn(
     id: int,
 ) -> Any:
     
-    turno_atendido = await next_turn(db=db, id=id)
-
-    print('Emitiendo evento refresh')
-    await sio.emit('refresh', 'refresh')
+    turno_atendido = await next_turn(db=db, id_medico=id)
+    consultorio = crud.crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id)
+    nro_consul = consultorio.split(' ')[1]
+    print(f'Emitiendo evento refresh para {consultorio}')
+    await sio.emit('refresh', nro_consul)
     print('Evento refresh emitido')
     
     return turno_atendido
@@ -99,12 +109,21 @@ async def handle_previous_turn(
     
     turno_anterior = await previous_turn(db=db, id=id)
 
-    print('Emitiendo evento refresh')
-    await sio.emit('refresh', 'refresh')
+    consultorio = crud.crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id)
+    nro_consul = consultorio.split(' ')[1]
+    print(f'Emitiendo evento refresh para {consultorio}')
+    await sio.emit('refresh', nro_consul)
     print('Evento refresh emitido')
     
     return turno_anterior
 
+def abrir_vistas_teles():
+    process = subprocess.Popen(['/bin/bash', '/home/administrador/Escritorio/app_centro_medico/turnos-cm-backend/scripts/abrir_teles.sh'])
+
+@app.get("/abrir-ventanas-teles")
+async def handle_abrir_vistas_teles(background_tasks: BackgroundTasks):
+    background_tasks.add_task(abrir_vistas_teles)    
+    return {"message": 'Ventanas abiertas correctamente'}
 
 app = ASGIApp(sio, app)
     

@@ -92,18 +92,22 @@ Para automatizar el inicio de los servicios de backend y frontend en el sistema 
     sudo bash setup_services.sh
     ```
 
-2. Copiar el script "abrir_teles.sh" al escritorio.
+2. Sin maximizar, abrir chrome y arrastrarlo hacia la pantalla mas incómoda. 
 
-3. Sin maximizar, abrir chrome y arrastrarlo hacia la pantalla mas incómoda. 
+3. Configurarlo para que abra por defecto la url de esa sala con todos los permisos necesarios.
 
-4. Configurarlo para que abra por defecto la direccion de esa sala.
+4. Cerrarlo
 
-5. Cerrarlo
+5. Repetir pasos 3-5 con firefox.
 
-4. Repetir pasos 3-5 con firefox.
+6. Reiniciar y comprobar que los servicios se iniciaron automaticamente.
 
-3. Reiniciar y comprobar que los servicios se iniciaron automaticamente.
+7. En las computadoras de administracion, crear un acceso directo a <http://{ip-servidor-backend}:8000/iniciar-vistas-teles>
 
-### Abrir vista de Televisores
+## Abrir ventanas de televisores
 
-1. En el escritorio, ejecutar el archivo "abrir_teles.sh".
+Para abrir las vistas de los televisores de todas las salas, usar desde cualquier computadora el siguiente enlace:
+
+    http://{ip-servidor-backend}:8000/iniciar-vistas-teles
+
+NOTA: Revisar que en los televisores ya se vea el escritorio

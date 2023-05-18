@@ -17,5 +17,22 @@ class CRUDTurno(CRUDBase[Turno, TurnoCreate, TurnoUpdate]):
         ).offset(skip).limit(limit).all()
         
         return db_turnos
+    
+    def create(self, db: Session, *, obj_in: TurnoCreate) -> Turno:
+        today = datetime.now().date()
+        nro_orden = len(db.query(Turno).filter(
+            Turno.fecha >= today,
+            Turno.id_medico == obj_in.id_medico
+        ).all())
+        nro_orden += 1
+
+        obj_in_data = jsonable_encoder(obj_in)
+        db_obj = self.model(**obj_in_data, nro_orden=nro_orden)  # type: ignore
+        db.add(db_obj)
+        db.commit()
+        db.refresh(db_obj)
+
+        return db_obj
+        
 
 turno = CRUDTurno(Turno)

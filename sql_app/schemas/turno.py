@@ -21,6 +21,7 @@ class TurnoUpdate(TurnoBase):
 # Properties shared by models stored in DB
 class TurnoInDBBase(TurnoBase):
     id: int
+    nro_orden: int
     pendiente: bool
     fecha: datetime
 

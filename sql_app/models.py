@@ -10,7 +10,7 @@ class Paciente(Base):
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=False)
     nombre = Column(String)
     apellido = Column(String)
-    fecha_nacimiento = Column(Date, default=lambda:datetime.now().date())
+    fecha_nacimiento = Column(DateTime, default=lambda:datetime.now())
     email = Column(String)
     telefono = Column(String)
     
@@ -62,6 +62,7 @@ class Turno(Base):
     __tablename__ = 'turnos'
     
     id = Column(Integer, primary_key=True)
+    nro_orden = Column(Integer)
     id_paciente = Column(Integer, ForeignKey('pacientes.id'))
     id_medico = Column(Integer, ForeignKey('medicos.id'))
     motivo_consulta = Column(String)
