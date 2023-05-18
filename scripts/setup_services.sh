@@ -1,17 +1,18 @@
 #!/bin/bash
 
 # Define the paths for your script files
-SCRIPTS_PATH="/home/ados/Desktop/Proyectos/Facu/turnos-cm-backend/scripts"
+SCRIPTS_PATH="/home/administrador/Escritorio/app_centro_medico/turnos-cm-backend/scripts"
 RUN_BACKEND_SCRIPT="$SCRIPTS_PATH/linux_iniciar_backend.sh"
 RUN_FRONTEND_SCRIPT="$SCRIPTS_PATH/linux_iniciar_frontend.sh"
+RUN_ABRIR_TELES_SCRIPT="$SCRIPTS_PATH/abrir_teles.sh"
 
 # Replace 'your_user' with your Linux username
-USERNAME="ados"
+USERNAME="administrador"
 
 # Create the systemd service files
 cat << EOF | sudo tee /etc/systemd/system/centro_medico_backend.service
 [Unit]
-Description=Run backend and frontend services
+Description=Run backend service
 
 [Service]
 Type=simple
@@ -21,13 +22,13 @@ ExecStart=/bin/bash $RUN_BACKEND_SCRIPT
 Restart=always
 
 [Install]
-WantedBy=mdefault.target
+WantedBy=multi-user.target
 EOF
 
 # Create the systemd service files
 cat << EOF | sudo tee /etc/systemd/system/centro_medico_frontend.service
 [Unit]
-Description=Run backend and frontend services
+Description=Run frontend service
 
 [Service]
 Type=simple
@@ -37,7 +38,7 @@ ExecStart=/bin/bash $RUN_FRONTEND_SCRIPT
 Restart=always
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
 EOF
 
 # Enable and start the services
