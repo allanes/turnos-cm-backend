@@ -135,12 +135,12 @@ def delete_medico(
 async def next_turn(
     *,
     db: Session, # = Depends(deps.get_db),
-    id: int,
+    id_medico: int,
 ) -> Any:
     """
     Delete an medico.
     """
-    db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
+    db_medico = crud_medico.medico.get_with_turns(db=db, id=id_medico)
     if not db_medico:
         raise HTTPException(status_code=404, detail="Medico not found")
     if not db_medico.turnos:
