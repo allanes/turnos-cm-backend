@@ -1,7 +1,7 @@
 import os
 import subprocess
 from typing import Any
-from fastapi import Depends, FastAPI, BackgroundTasks
+from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from sql_app import crud, models, schemas
@@ -40,6 +40,7 @@ origins = [
     "http://localhost:*",
     "http://localhost:5000",
     "http://localhost:3000",
+    "http://192.168.0.0/16"
 ]
 
 app.add_middleware(
@@ -143,6 +144,16 @@ def abrir_vistas_teles():
 async def handle_abrir_vistas_teles(background_tasks: BackgroundTasks):
     background_tasks.add_task(abrir_vistas_teles)    
     return {"message": 'Ventanas abiertas correctamente'}
+
+@app.get("/abrir-ventanas-teles")
+async def handle_abrir_vistas_teles(request:Request, background_tasks: BackgroundTasks):
+    client_host = request.client.host
+
+    if client_host.startswith("192.168."):
+        background_tasks.add_task(abrir_vistas_teles)
+        return {'message': 'Comando enviado correctamente'}
+    else:
+        return {'message': 'Acceso no autorizado'}
 
 app = ASGIApp(sio, app)
     
