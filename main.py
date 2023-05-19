@@ -16,6 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sql_app.servidor_socketio import sio
 from fastapi.routing import Mount
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from socketio import ASGIApp
 
 from fastapi.responses import FileResponse
@@ -34,6 +35,7 @@ app = FastAPI(
     },
 )
 app.include_router(api_router, prefix="/api/v1")
+app.mount("/videos", StaticFiles(directory="videos"), name="videos")
 
 origins = [
     "http://localhost",
@@ -144,6 +146,20 @@ def abrir_vistas_teles():
 async def handle_abrir_vistas_teles(background_tasks: BackgroundTasks):
     background_tasks.add_task(abrir_vistas_teles)    
     return {"message": 'Ventanas abiertas correctamente'}
+
+@app.get("/lista-videos-locales")
+def read_videos():
+    video_files = os.listdir('videos')
+    video_files = ["http://localhost:8000/videos/"+file for file in video_files]
+    return video_files
+
+@app.get("/video/{video_id}")
+async def get_video(video_id: str):
+    video_directory = os.getcwd() + "/videos/"
+    video_files = os.listdir(video_directory)
+    if video_id not in video_files:
+        raise HTTPException(status_code=404, detail="Video not found")
+    return FileResponse(video_directory + video_id)
 
 @app.get("/abrir-ventanas-teles")
 async def handle_abrir_vistas_teles(request:Request, background_tasks: BackgroundTasks):
