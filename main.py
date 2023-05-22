@@ -4,9 +4,10 @@ from typing import Any
 from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException, Request
 from sqlalchemy.orm import Session
 
-from sql_app import crud, models, schemas
-from sql_app.api_v1.endpoints.turnos import create_turno, delete_turno
-from sql_app.api_v1.endpoints.medicos import next_turn, previous_turn
+from sql_app import models
+# from sql_app import crud, models, schemas
+# from sql_app.api_v1.endpoints.turnos import create_turno, delete_turno
+# from sql_app.api_v1.endpoints.medicos import next_turn, previous_turn
 
 from sql_app.crud.load_data import init_db, cargar_turnos_ejemplo
 from sql_app.api_v1.api import api_router
@@ -41,7 +42,7 @@ origins = [
     "http://localhost:*",
     "http://localhost:5000",
     "http://localhost:3000",
-    "http://192.168.0.0/16"
+    "http://192.168.100.0/16"
 ]
 
 app.add_middleware(
@@ -66,23 +67,8 @@ def inicializar_db(db: Session = Depends(get_db)):
 def inicializar_db(db: Session = Depends(get_db)):
     cargar_turnos_ejemplo(db=db)
 
-@app.post("/api/v1/turns/", response_model=schemas.turno.Turno, tags=["Turnos"])
-async def handle_create_turno(
-    *,
-    db: Session = Depends(get_db),
-    turno_in: schemas.turno.TurnoCreate,
-) -> Any:
-    print('Creando turno')
-    turno_creado = await create_turno(db=db, turno_in=turno_in)
-
-    consultorio = crud.crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=turno_in.id_medico)
-    nro_consul = consultorio.split(' ')[1]
-
-    await sio.emit('created-turn', f'{nro_consul}')
-    
-    return turno_creado
-
-@app.get("/api/v1/doctors/{id}/nextPatient", response_model=schemas.turno.Turno, tags=["Medicos"])
+"""
+# @app.get("/api/v1/doctors/{id}/nextPatient", response_model=schemas.turno.Turno, tags=["Medicos"])
 async def handle_next_turn(
     *,
     db: Session = Depends(get_db),
@@ -107,7 +93,7 @@ async def handle_next_turn(
     
     return turno_atendido
 
-@app.get("/api/v1/doctors/{id}/previousPatient", response_model=schemas.turno.Turno, tags=["Medicos"])
+# @app.get("/api/v1/doctors/{id}/previousPatient", response_model=schemas.turno.Turno, tags=["Medicos"])
 async def handle_previous_turn(
     *,
     db: Session = Depends(get_db),
@@ -133,6 +119,8 @@ async def handle_previous_turn(
     print('Evento refresh emitido')
     
     return turno_anterior
+
+"""
 
 @app.get("/lista-videos-gdrive")
 def read_videos():

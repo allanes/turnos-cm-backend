@@ -7,6 +7,7 @@ from sql_app.schemas import turno
 from sql_app.crud import crud_turno
 from sql_app import crud, models, schemas
 from sql_app import deps
+from sql_app.servidor_socketio import sio
 
 router = APIRouter()
 
@@ -23,15 +24,16 @@ def read_turnos(
     return turnos
 
 
-# @router.post("/", response_model=turno.Turno)
+@router.post("/", response_model=turno.Turno)
 async def create_turno(
     *,
-    db: Session,# = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db),
     turno_in: turno.TurnoCreate,
 ) -> Any:
     """
     Create new turno.
     """
+    print('Creando nuevo turnardo')
     db_paciente = crud.paciente.get(db=db, id=turno_in.id_paciente)
     
     if not db_paciente:
@@ -43,6 +45,11 @@ async def create_turno(
         raise HTTPException(status_code=404, detail="Medico not found")
     
     turno = crud_turno.turno.create(db=db, obj_in=turno_in)
+
+    consultorio = crud.crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=turno_in.id_medico)
+    nro_consul = consultorio.split(' ')[1]
+
+    await sio.emit('created-turn', f'{nro_consul}')
 
     return turno
 

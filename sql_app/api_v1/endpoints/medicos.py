@@ -2,6 +2,7 @@ from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sql_app.servidor_socketio import sio
 
 from sql_app.schemas import medico, turno
 from sql_app.crud import crud_medico, crud_turno, crud_registro_consultorios, crud_consultorio
@@ -131,16 +132,16 @@ def delete_medico(
     medico = crud_medico.medico.remove(db=db, id=id)
     return medico
 
-# @router.get("/{id}/next", response_model=turno.Turno)
-async def next_turn(
+@router.get("/{id}/nextPatient", response_model=turno.Turno)
+async def handle_next_turn(
     *,
-    db: Session, # = Depends(deps.get_db),
-    id_medico: int,
+    db: Session = Depends(deps.get_db),
+    id: int,
 ) -> Any:
     """
     Delete an medico.
     """
-    db_medico = crud_medico.medico.get_with_turns(db=db, id=id_medico)
+    db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
     if not db_medico:
         raise HTTPException(status_code=404, detail="Medico not found")
     if not db_medico.turnos:
@@ -154,11 +155,28 @@ async def next_turn(
         obj_in={'pendiente': False}
     )
 
+    consultorio = crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id)
+    nro_consul = consultorio.split(' ')[1]
+
+    db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
+    
+    if not db_medico.turnos:
+        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")    
+    
+    prox_paciente = db_medico.turnos[0].nombre_paciente
+    print(f'Nombre del prox paciente: {prox_paciente}')
+    
+    print(f'Emitiendo evento refresh para {consultorio}')
+    await sio.emit('patient-turn', f'{nro_consul};{prox_paciente}')
+    print('Evento refresh emitido')
+
     return db_turno
     
-async def previous_turn(
+
+@router.get("/{id}/previousPatient", response_model=turno.Turno)
+async def handle_previous_turn(
     *,
-    db: Session, # = Depends(deps.get_db),
+    db: Session = Depends(deps.get_db),
     id: int,
 ) -> Any:
     """
@@ -176,5 +194,20 @@ async def previous_turn(
         db_obj=ultimo_turno,
         obj_in={'pendiente': True}
     )
+
+    consultorio = crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id)
+    nro_consul = consultorio.split(' ')[1]
+
+    # 
+    db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
+    
+    if not db_medico.turnos:
+        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")    
+    
+    prev_paciente = db_medico.turnos[0].nombre_paciente
+    
+    print(f'Emitiendo evento refresh para paciente {prev_paciente}, consul {consultorio}')
+    await sio.emit('patient-turn', f'{nro_consul};{prev_paciente}')
+    print('  Evento emitido')
     
     return ultimo_turno
