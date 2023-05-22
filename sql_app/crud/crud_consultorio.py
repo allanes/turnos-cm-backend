@@ -35,18 +35,23 @@ class CRUDConsultorio(CRUDBase[Consultorio, ConsultorioCreate, ConsultorioUpdate
                 .filter(func.date(Turno.fecha) == today)
                 .filter(Turno.pendiente == True)
                 .filter(Turno.id_medico==db_medico.id)
-                .order_by(Turno.fecha.asc())
+                .order_by(Turno.id.asc())
                 .all()
             )
-            ids_pacientes = [db_turno.id_paciente for db_turno in db_turnos]
+
+            ids_pacientes = []
+            nros_orden = []
+            for db_turno in db_turnos:
+                ids_pacientes.append(db_turno.id_paciente)
+                nros_orden.append(db_turno.nro_orden)
             
             if not ids_pacientes:
                 nombres_pacientes = None
             else:
                 nombres_pacientes = []
-                for id_pac in ids_pacientes:
+                for id_pac, nro_orden in zip(ids_pacientes, nros_orden):
                     db_paciente = (db.query(Paciente).where(Paciente.id==id_pac)).first()
-                    nombre_paciente = f'{db_paciente.apellido} {db_paciente.nombre}' if db_paciente else None
+                    nombre_paciente = f'{nro_orden} {db_paciente.apellido} {db_paciente.nombre}' if db_paciente else None
                     nombres_pacientes.append(nombre_paciente)
             
             if consul:
