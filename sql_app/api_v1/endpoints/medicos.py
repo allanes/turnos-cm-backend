@@ -132,6 +132,22 @@ def delete_medico(
     medico = crud_medico.medico.remove(db=db, id=id)
     return medico
 
+async def handle_evento_nuevo_paciente(
+    id_medico: int,
+    db: Session = Depends(deps.get_db),
+):
+    consultorio = crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id_medico)
+    nro_consul = consultorio.split(' ')[1]
+    
+    db_medico = crud_medico.medico.get_with_turns(db=db, id=id_medico)
+    
+    if not db_medico.turnos:
+        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")    
+    
+    nuevo_paciente = db_medico.turnos[0].nombre_paciente
+    await sio.emit('patient-turn', f'{nro_consul};{nuevo_paciente}')
+
+
 @router.get("/{id}/nextPatient", response_model=turno.Turno)
 async def handle_next_turn(
     *,
@@ -155,20 +171,7 @@ async def handle_next_turn(
         obj_in={'pendiente': False}
     )
 
-    consultorio = crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id)
-    nro_consul = consultorio.split(' ')[1]
-
-    db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
-    
-    if not db_medico.turnos:
-        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")    
-    
-    prox_paciente = db_medico.turnos[0].nombre_paciente
-    print(f'Nombre del prox paciente: {prox_paciente}')
-    
-    print(f'Emitiendo evento refresh para {consultorio}')
-    await sio.emit('patient-turn', f'{nro_consul};{prox_paciente}')
-    print('Evento refresh emitido')
+    await handle_evento_nuevo_paciente(id_medico=id, db=db)
 
     return db_turno
     
@@ -195,19 +198,6 @@ async def handle_previous_turn(
         obj_in={'pendiente': True}
     )
 
-    consultorio = crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id)
-    nro_consul = consultorio.split(' ')[1]
-
-    # 
-    db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
-    
-    if not db_medico.turnos:
-        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")    
-    
-    prev_paciente = db_medico.turnos[0].nombre_paciente
-    
-    print(f'Emitiendo evento refresh para paciente {prev_paciente}, consul {consultorio}')
-    await sio.emit('patient-turn', f'{nro_consul};{prev_paciente}')
-    print('  Evento emitido')
+    await handle_evento_nuevo_paciente(id_medico=id, db=db)    
     
     return ultimo_turno

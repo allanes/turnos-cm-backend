@@ -5,9 +5,6 @@ from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from sql_app import models
-# from sql_app import crud, models, schemas
-# from sql_app.api_v1.endpoints.turnos import create_turno, delete_turno
-# from sql_app.api_v1.endpoints.medicos import next_turn, previous_turn
 
 from sql_app.crud.load_data import init_db, cargar_turnos_ejemplo
 from sql_app.api_v1.api import api_router
@@ -15,7 +12,6 @@ from sql_app.database import engine
 from sql_app.deps import get_db
 from fastapi.middleware.cors import CORSMiddleware
 from sql_app.servidor_socketio import sio
-from fastapi.routing import Mount
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from socketio import ASGIApp
@@ -67,60 +63,6 @@ def inicializar_db(db: Session = Depends(get_db)):
 def inicializar_db(db: Session = Depends(get_db)):
     cargar_turnos_ejemplo(db=db)
 
-"""
-# @app.get("/api/v1/doctors/{id}/nextPatient", response_model=schemas.turno.Turno, tags=["Medicos"])
-async def handle_next_turn(
-    *,
-    db: Session = Depends(get_db),
-    id: int,
-) -> Any:
-    
-    turno_atendido = await next_turn(db=db, id_medico=id)
-    consultorio = crud.crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id)
-    nro_consul = consultorio.split(' ')[1]
-
-    db_medico = crud.crud_medico.medico.get_with_turns(db=db, id=id)
-    
-    if not db_medico.turnos:
-        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")    
-    
-    prox_paciente = db_medico.turnos[0].nombre_paciente
-    print(f'Nombre del prox paciente: {prox_paciente}')
-    
-    print(f'Emitiendo evento refresh para {consultorio}')
-    await sio.emit('patient-turn', f'{nro_consul};{prox_paciente}')
-    print('Evento refresh emitido')
-    
-    return turno_atendido
-
-# @app.get("/api/v1/doctors/{id}/previousPatient", response_model=schemas.turno.Turno, tags=["Medicos"])
-async def handle_previous_turn(
-    *,
-    db: Session = Depends(get_db),
-    id: int,
-) -> Any:
-    
-    turno_anterior = await previous_turn(db=db, id=id)
-
-    consultorio = crud.crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=id)
-    nro_consul = consultorio.split(' ')[1]
-
-    # 
-    db_medico = crud.crud_medico.medico.get_with_turns(db=db, id=id)
-    
-    if not db_medico.turnos:
-        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")    
-    
-    prev_paciente = db_medico.turnos[0].nombre_paciente
-    print(f'Nombre del prox paciente: {prev_paciente}')
-
-    print(f'Emitiendo evento refresh para {consultorio}')
-    await sio.emit('patient-turn', f'{nro_consul};{prev_paciente}')
-    print('Evento refresh emitido')
-    
-    return turno_anterior
-
-"""
 
 @app.get("/lista-videos-gdrive")
 def read_videos():
