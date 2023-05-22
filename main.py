@@ -74,6 +74,11 @@ async def handle_create_turno(
 ) -> Any:
     print('Creando turno')
     turno_creado = await create_turno(db=db, turno_in=turno_in)
+
+    consultorio = crud.crud_medico.medico.get_ultimo_consultorio_by_medico(db=db, medico_id=turno_in.id_medico)
+    nro_consul = consultorio.split(' ')[1]
+
+    await sio.emit('created-turn', f'{nro_consul}')
     
     return turno_creado
 
@@ -97,7 +102,7 @@ async def handle_next_turn(
     print(f'Nombre del prox paciente: {prox_paciente}')
     
     print(f'Emitiendo evento refresh para {consultorio}')
-    await sio.emit('refresh', f'{nro_consul};{prox_paciente}')
+    await sio.emit('patient-turn', f'{nro_consul};{prox_paciente}')
     print('Evento refresh emitido')
     
     return turno_atendido
@@ -124,7 +129,7 @@ async def handle_previous_turn(
     print(f'Nombre del prox paciente: {prev_paciente}')
 
     print(f'Emitiendo evento refresh para {consultorio}')
-    await sio.emit('refresh', f'{nro_consul};{prev_paciente}')
+    await sio.emit('patient-turn', f'{nro_consul};{prev_paciente}')
     print('Evento refresh emitido')
     
     return turno_anterior
