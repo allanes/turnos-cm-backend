@@ -3,6 +3,7 @@ from datetime import datetime
 
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from sql_app.crud.base import CRUDBase
@@ -15,18 +16,50 @@ class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
         existe = db.query(self.model).filter(self.model.id == id).first()
         return True if existe else False
     
+    def __get_consultorios_activos(self, db: Session) -> list[RegistroConsultorios]:
+        today = datetime.now().date()
+
+        subquery = (
+            db.query(func.max(RegistroConsultorios.id).label("max_id"))
+            .group_by(RegistroConsultorios.id_consultorio)
+            .subquery()
+        )
+
+        consuls_activos = (
+            db.query(RegistroConsultorios)
+            .filter(RegistroConsultorios.fecha >= today)
+            .join(subquery, RegistroConsultorios.id == subquery.c.max_id)
+            .filter(RegistroConsultorios.id_medico.isnot(None))
+            .order_by(RegistroConsultorios.id_consultorio, RegistroConsultorios.id)
+        ).all()
+
+        return consuls_activos
+    
     def get_with_turns(self, db: Session, id: Any) -> MedicoConTurnos | None:
         today = datetime.now().date()
         db_medico = db.query(self.model).filter(self.model.id == id, self.model.activo == True).first()
         if not db_medico:
             raise HTTPException(status_code=404, detail="Medico not found")
-        ultimo_consultorio = self.get_ultimo_consultorio_by_medico(db=db, medico_id=db_medico.id)
-        print(f'ultimo consultorio para medico {db_medico.nombre}: {ultimo_consultorio}')
-        turnos = db.query(Turno).filter(
-            Turno.pendiente==True,
-            Turno.fecha >= today,
-            Turno.id_medico==db_medico.id
-        ).all()
+        
+        # Busco los consultorios activos
+        consuls_activos = self.__get_consultorios_activos(db=db)
+
+        medicos_atendiendo = [consul_activo.id_medico for consul_activo in consuls_activos]
+        print(f'Cantidad de medicos atendiendo: {len(medicos_atendiendo)}')
+
+        turnos = []
+        ultimo_consultorio = None
+        if id in medicos_atendiendo:
+            turnos = db.query(Turno).filter(
+                Turno.pendiente==True,
+                Turno.fecha >= today,
+                Turno.id_medico==db_medico.id
+            ).all()
+            
+            indice = medicos_atendiendo.index(id)
+            ultimo_consultorio = consuls_activos[indice].id
+            print(f'ultimo consultorio para medico {db_medico.nombre}: {ultimo_consultorio}')
+        
         medico_out = MedicoConTurnos(
             **db_medico.__dict__,
             consultorio=ultimo_consultorio,
@@ -61,19 +94,16 @@ class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
         db.refresh(db_obj)
         return db_obj
         
-    def get_ultimo_consultorio_by_medico(self, db: Session, medico_id: int) -> str:
-        today = datetime.now().date()
+    def get_ultimo_consultorio_by_medico(self, db: Session, medico_id: int) -> str | None:
+        consuls_activos = self.__get_consultorios_activos(db=db)
+        medicos_atendiendo = [consul_activo.id_medico for consul_activo in consuls_activos]
         
-        ultimo_consultorio = (
-            db.query(Consultorio.numero, RegistroConsultorios.fecha)
-            .join(RegistroConsultorios, Consultorio.id == RegistroConsultorios.id_consultorio)
-            .filter(RegistroConsultorios.fecha >= today)
-            .filter(RegistroConsultorios.id_medico == medico_id)
-            .order_by(RegistroConsultorios.id.desc())
-            .first()
-        )
+        ultimo_consultorio = None
+        if medico_id in medicos_atendiendo:
+            indice = medicos_atendiendo.index(medico_id)
+            ultimo_consultorio = consuls_activos[indice]
         
-        return f'Consultorio {ultimo_consultorio[0]}' if ultimo_consultorio else None
+        return f'Consultorio {ultimo_consultorio.id_consultorio}' if ultimo_consultorio else None        
     
     def get_ultimo_turno_atendido(self, db: Session, medico_id: int) -> Turno:
         

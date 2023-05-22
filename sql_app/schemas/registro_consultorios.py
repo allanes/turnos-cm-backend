@@ -11,7 +11,7 @@ class RegistroConsultoriosBase(BaseModel):
 # Properties to receive on item creation
 class RegistroConsultoriosCreate(RegistroConsultoriosBase):
     id_consultorio: int
-    id_medico: int    
+    # id_medico: int    
     
 # Properties to receive on item update
 class RegistroConsultoriosUpdate(RegistroConsultoriosBase):
@@ -21,7 +21,7 @@ class RegistroConsultoriosUpdate(RegistroConsultoriosBase):
 class RegistroConsultoriosInDBBase(RegistroConsultoriosBase):
     id: int
     id_consultorio: int
-    id_medico: int
+    # id_medico: int
     fecha: datetime
 
     class Config:
