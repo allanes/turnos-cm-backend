@@ -34,7 +34,7 @@ def create_recepcionista(
     """
     recepcionista = crud_recepcionista.recepcionista.get(db=db, id=recepcionista_in.id)
     if recepcionista:
-        raise HTTPException(status_code=409, detail="Recepcionist already exists")
+        raise HTTPException(status_code=409, detail=f"Ya existe un recepcionista con dni {recepcionista_in.id}")
     recepcionista = crud_recepcionista.recepcionista.create(db=db, obj_in=recepcionista_in)
     return recepcionista
 
@@ -51,7 +51,7 @@ def update_recepcionista(
     """
     recepcionista = crud_recepcionista.recepcionista.get(db=db, id=id)
     if not recepcionista:
-        raise HTTPException(status_code=404, detail="Recepcionista not found")
+        raise HTTPException(status_code=404, detail="Recepcionista no encontrado")
     recepcionista = crud_recepcionista.recepcionista.update(db=db, db_obj=recepcionista, obj_in=recepcionista_in)
     return recepcionista
 
@@ -67,7 +67,7 @@ def read_recepcionista(
     """
     recepcionista = crud_recepcionista.recepcionista.get(db=db, id=id)
     if not recepcionista:
-        raise HTTPException(status_code=404, detail="Recepcionista not found")
+        raise HTTPException(status_code=404, detail="Recepcionista no encontrado")
     return recepcionista
 
 
@@ -82,6 +82,6 @@ def delete_recepcionista(
     """
     recepcionista = crud_recepcionista.recepcionista.get(db=db, id=id)
     if not recepcionista:
-        raise HTTPException(status_code=404, detail="Recepcionista not found")
+        raise HTTPException(status_code=404, detail="Recepcionista no encontrado")
     recepcionista = crud_recepcionista.recepcionista.remove(db=db, id=id)
     return recepcionista

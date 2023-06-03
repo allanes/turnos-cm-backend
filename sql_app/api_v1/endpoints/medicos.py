@@ -72,7 +72,7 @@ def create_medico(
         db_medico = crud_medico.medico.create(db=db, obj_in=medico_in)
     else:
         if db_medico.activo:
-            raise HTTPException(status_code=409, detail="Medico already exists")
+            raise HTTPException(status_code=409, detail="El médico ya existe")
         else:
             print(f'entrando a actualizar el medico')
             db_medico = crud_medico.medico.reactivate(
@@ -96,7 +96,7 @@ def update_medico(
     """
     existe = crud_medico.medico.exists(db=db, id=id)
     if not existe:
-        raise HTTPException(status_code=404, detail="Medico not found")
+        raise HTTPException(status_code=404, detail="Medico no encontrado")
     db_medico = crud.medico.get(db=db, id=id)
     db_medico = crud_medico.medico.update(db=db, db_obj=db_medico, obj_in=medico_in)
     return db_medico
@@ -113,7 +113,7 @@ def read_medico(
     """
     medico = crud_medico.medico.get_with_turns(db=db, id=id)
     if not medico:
-        raise HTTPException(status_code=404, detail="Medico not found")
+        raise HTTPException(status_code=404, detail="Medico no encontrado")
     return medico
 
 
@@ -128,7 +128,7 @@ def delete_medico(
     """
     medico = crud_medico.medico.get(db=db, id=id)
     if not medico:
-        raise HTTPException(status_code=404, detail="Medico not found")
+        raise HTTPException(status_code=404, detail="Medico no encontrado")
     medico = crud_medico.medico.remove(db=db, id=id)
     return medico
 
@@ -159,7 +159,7 @@ async def handle_next_turn(
     """
     db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
     if not db_medico:
-        raise HTTPException(status_code=404, detail="Medico not found")
+        raise HTTPException(status_code=404, detail="Medico no encontrado")
     if not db_medico.turnos:
         raise HTTPException(status_code=404, detail="El Medico no tiene turnos")
     
@@ -188,7 +188,7 @@ async def handle_previous_turn(
     db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
     
     if not db_medico:
-        raise HTTPException(status_code=404, detail="Medico not found")
+        raise HTTPException(status_code=404, detail="Medico no encontrado")
     
     ultimo_turno = crud_medico.medico.get_ultimo_turno_atendido(db=db, medico_id=id)
 

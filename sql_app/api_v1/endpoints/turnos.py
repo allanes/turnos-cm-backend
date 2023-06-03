@@ -51,12 +51,12 @@ async def create_turno(
     db_paciente = crud.paciente.get(db=db, id=turno_in.id_paciente)
     
     if not db_paciente:
-        raise HTTPException(status_code=404, detail="Paciente not found")
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
     
     db_medico = crud.medico.get(db=db, id=turno_in.id_medico)
     
     if not db_medico:
-        raise HTTPException(status_code=404, detail="Medico not found")
+        raise HTTPException(status_code=404, detail="Medico no encontrado")
     
     turno_db = crud_turno.turno.create(db=db, obj_in=turno_in)
 
@@ -77,7 +77,7 @@ def update_turno(
     """
     turno_db = crud_turno.turno.get(db=db, id=id)
     if not turno_db:
-        raise HTTPException(status_code=404, detail="Turno not found")
+        raise HTTPException(status_code=404, detail="Turno no encontrado")
     turno_db = crud_turno.turno.update(db=db, db_obj=turno_db, obj_in=turno_in)
     return turno_db
 
@@ -93,7 +93,7 @@ def read_turno(
     """
     turno_db = crud_turno.turno.get(db=db, id=id)
     if not turno_db:
-        raise HTTPException(status_code=404, detail="Turno not found")
+        raise HTTPException(status_code=404, detail="Turno no encontrado")
     return turno_db
 
 
@@ -108,7 +108,7 @@ async def delete_turno(
     """
     turno_db = crud_turno.turno.get(db=db, id=id)
     if not turno_db:
-        raise HTTPException(status_code=404, detail="Turno not found")
+        raise HTTPException(status_code=404, detail="Turno no encontrado")
     id_medico = turno_db.id_medico
     turno_dict = turno_db.__dict__  # Convert the instance to a dict before deleting it
     crud_turno.turno.remove(db=db, id=id)

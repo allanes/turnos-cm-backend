@@ -53,7 +53,7 @@ def create_consultorio(
     consultorios_db = crud_consultorio.consultorio.get_consultorios_por_sala(db=db, sala=consultorio_in.sala)
     print(f'lista de consuls: {consultorios_db}')
     if len(consultorios_db) > 0 and consultorios_db[0].numero == consultorio_in.numero:
-        raise HTTPException(status_code=409, detail=f'Office {consultorio_in.numero} in room {consultorio_in.sala} already exists')
+        raise HTTPException(status_code=409, detail=f'El consultorio {consultorio_in.numero} ya existe en la sala {consultorio_in.sala}')
     consultorio = crud_consultorio.consultorio.create(db=db, obj_in=consultorio_in)
     return consultorio
 
@@ -70,7 +70,7 @@ def update_consultorio(
     """
     consultorio = crud_consultorio.consultorio.get(db=db, id=id)
     if not consultorio:
-        raise HTTPException(status_code=404, detail="Consultorio not found")
+        raise HTTPException(status_code=404, detail="Consultorio no encontrado")
     consultorio = crud_consultorio.consultorio.update(db=db, db_obj=consultorio, obj_in=consultorio_in)
     return consultorio
 
@@ -86,7 +86,7 @@ def read_consultorio(
     """
     consultorio = crud_consultorio.consultorio.get(db=db, id=id)
     if not consultorio:
-        raise HTTPException(status_code=404, detail="Consultorio not found")
+        raise HTTPException(status_code=404, detail="Consultorio no encontrado")
     return consultorio
 
 
@@ -101,6 +101,6 @@ def delete_consultorio(
     """
     consultorio = crud_consultorio.consultorio.get(db=db, id=id)
     if not consultorio:
-        raise HTTPException(status_code=404, detail="Consultorio not found")
+        raise HTTPException(status_code=404, detail="Consultorio no encontrado")
     consultorio = crud_consultorio.consultorio.remove(db=db, id=id)
     return consultorio
