@@ -42,10 +42,16 @@ async def create_registro_consultorio(
         if not db_medico:
             raise HTTPException(status_code=404, detail="Medico no encontrado")
         
-        lista_ids_consults_activos = [consul_activo.id_consultorio for consul_activo in crud.registro_consultorios.get_multi(db=db)]
-        if registro_in.id_consultorio in lista_ids_consults_activos:
-            raise HTTPException(status_code=404, detail="Ya existe un médico atendiendo ahí. Por favor libere el consultorio primero.")
+        lista_consuls_activos = crud.registro_consultorios.get_multi(db=db)
+
+        lista_ids_consuls_activos = [consul_activo.id_consultorio for consul_activo in lista_consuls_activos]
+        if registro_in.id_consultorio in lista_ids_consuls_activos:
+            raise HTTPException(status_code=404, detail=f"El consultorio {registro_in.id_consultorio} ya está ocupado. Por favor libérelo primero.")
         
+        lista_ids_medicos_activos = [consul_activo.id_medico for consul_activo in lista_consuls_activos]
+        if registro_in.id_medico in lista_ids_medicos_activos:
+            indice = lista_ids_medicos_activos.index(registro_in.id_medico)
+            raise HTTPException(status_code=404, detail=f"El médico ya está atendiendo en el consultorio {lista_consuls_activos[indice].id_consultorio}. Por favor libérelo primero.")
         
     else:
         # Caso medico saliendo (no llega campo id_medico)
