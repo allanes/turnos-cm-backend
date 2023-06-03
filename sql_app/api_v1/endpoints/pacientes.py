@@ -34,7 +34,7 @@ def create_paciente(
     """
     paciente = crud_paciente.paciente.get(db=db, id=paciente_in.id)
     if paciente:
-        raise HTTPException(status_code=409, detail="Paciente already exists")
+        raise HTTPException(status_code=409, detail=f"Ya existe un paciente con el dni {paciente_in.id}.")
     paciente = crud_paciente.paciente.create(db=db, obj_in=paciente_in)
     return paciente
 
@@ -51,7 +51,7 @@ def update_paciente(
     """
     paciente = crud_paciente.paciente.get(db=db, id=id)
     if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente not found")
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
     paciente = crud_paciente.paciente.update(db=db, db_obj=paciente, obj_in=paciente_in)
     return paciente
 
@@ -67,7 +67,7 @@ def read_paciente(
     """
     paciente = crud_paciente.paciente.get(db=db, id=id)
     if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente not found")
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return paciente
 
 
@@ -82,6 +82,6 @@ def delete_paciente(
     """
     paciente = crud_paciente.paciente.get(db=db, id=id)
     if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente not found")
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
     paciente = crud_paciente.paciente.remove(db=db, id=id)
     return paciente

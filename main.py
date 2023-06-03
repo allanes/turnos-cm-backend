@@ -90,7 +90,7 @@ async def get_video(video_id: str):
     video_directory = os.getcwd() + "/videos/"
     video_files = os.listdir(video_directory)
     if video_id not in video_files:
-        raise HTTPException(status_code=404, detail="Video not found")
+        raise HTTPException(status_code=404, detail="Video no encontrado")
     return FileResponse(video_directory + video_id)
 
 def abrir_vistas_teles():

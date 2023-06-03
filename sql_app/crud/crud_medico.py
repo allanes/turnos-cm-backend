@@ -39,7 +39,7 @@ class CRUDMedico(CRUDBase[Medico, MedicoCreate, MedicoUpdate]):
         today = datetime.now().date()
         db_medico = db.query(self.model).filter(self.model.id == id, self.model.activo == True).first()
         if not db_medico:
-            raise HTTPException(status_code=404, detail="Medico not found")
+            raise HTTPException(status_code=404, detail="Medico no encontrado")
         
         # Busco los consultorios activos
         consuls_activos = self.__get_consultorios_activos(db=db)

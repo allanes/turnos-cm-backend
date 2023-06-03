@@ -33,14 +33,14 @@ async def create_registro_consultorio(
     """
     db_consultorio = crud.consultorio.get(db=db, id=registro_in.id_consultorio)
     if not db_consultorio:
-        raise HTTPException(status_code=404, detail="Consultorio not found")
+        raise HTTPException(status_code=404, detail="Consultorio no encontrado")
     
     if registro_in.id_medico:
         # Caso Medico Entrando (llega el campo id_medico)
         db_medico = crud.medico.get(db=db, id=registro_in.id_medico) 
     
         if not db_medico:
-            raise HTTPException(status_code=404, detail="Medico not found")
+            raise HTTPException(status_code=404, detail="Medico no encontrado")
         
         lista_ids_consults_activos = [consul_activo.id_consultorio for consul_activo in crud.registro_consultorios.get_multi(db=db)]
         if registro_in.id_consultorio in lista_ids_consults_activos:
