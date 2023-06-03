@@ -2,6 +2,7 @@ from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sql_app.servidor_socketio import sio
 
 from sql_app.schemas import registro_consultorios
 from sql_app import crud, models, schemas
@@ -22,7 +23,7 @@ def read_registros_consultorios(
 
 
 @router.post("/", response_model=registro_consultorios.RegistroConsultorios)
-def create_registro_consultorio(
+async def create_registro_consultorio(
     *,
     db: Session = Depends(deps.get_db),
     registro_in: registro_consultorios.RegistroConsultoriosCreate,
@@ -45,10 +46,14 @@ def create_registro_consultorio(
         if registro_in.id_consultorio in lista_ids_consults_activos:
             raise HTTPException(status_code=404, detail="Ya existe un médico atendiendo ahí. Por favor libere el consultorio primero.")
         
+        
     else:
         # Caso medico saliendo (no llega campo id_medico)
         pass
         
     registro_consultorio = crud.registro_consultorios.create(db=db, obj_in=registro_in)
+    print('Emitiendo evento new-office')
+    await sio.emit('new-office', f'{registro_consultorio.id_consultorio}')
     
     return registro_consultorio
+
