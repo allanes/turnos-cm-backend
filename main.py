@@ -105,6 +105,12 @@ async def handle_abrir_vistas_teles(request:Request, background_tasks: Backgroun
         return {'message': 'Comando enviado correctamente'}
     else:
         return {'message': 'Acceso no autorizado'}
+    
+@app.get("/descargar_qr", tags=["QR"])
+async def descargar_qr():
+    file_name = "QR_Medicos.pdf"
+    
+    return FileResponse(file_name, media_type='application/pdf')
 
 app = ASGIApp(sio, app)
     
