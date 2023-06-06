@@ -106,8 +106,20 @@ async def handle_abrir_vistas_teles(request:Request, background_tasks: Backgroun
     else:
         return {'message': 'Acceso no autorizado'}
     
-@app.get("/descargar_qr", tags=["QR"])
+@app.get("/descargar_qr", tags=["Downloads"])
 async def descargar_qr():
+    file_name = "QR_Medicos.pdf"
+    
+    return FileResponse(file_name, media_type='application/pdf')
+
+@app.get("/manual_iniciar_teles", tags=["Downloads"])
+async def descargar_manual_iniciar_teles():
+    file_name = "QR_Medicos.pdf"
+    
+    return FileResponse(file_name, media_type='application/pdf')
+
+@app.get("/manual_apagar_teles", tags=["Downloads"])
+async def descargar_manual_apagar_teles():
     file_name = "QR_Medicos.pdf"
     
     return FileResponse(file_name, media_type='application/pdf')
