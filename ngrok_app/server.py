@@ -1,9 +1,9 @@
 import os
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pyngrok import ngrok, conf
 from dotenv import load_dotenv
-
 import yaml
 
 # Load environment variables
@@ -36,7 +36,7 @@ async def startup_event():
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Hello": "world"}
 
 if __name__ == '__main__':
     import uvicorn

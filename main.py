@@ -94,6 +94,26 @@ def start_ngrok():
 
     return {"message": "ngrok server started"}
 
+@app.post("/stop_ngrok")
+def stop_ngrok():
+    global ngrok_server_process
+
+    # Check if the ngrok server is running
+    if ngrok_server_process is None or ngrok_server_process.poll() is not None:
+        raise HTTPException(status_code=400, detail="ngrok server is not running")
+
+    # Kill the ngrok_server.py process
+    try:
+        if platform.system() == "Windows":
+            ngrok_server_process.terminate()
+        else:
+            ngrok_server_process.send_signal(signal.SIGTERM)
+        ngrok_server_process = None
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "ngrok server stopped"}
+
 @app.get("/lista-videos-gdrive")
 def read_videos():
     video_urls = [
