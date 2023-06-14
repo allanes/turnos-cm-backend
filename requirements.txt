@@ -5,3 +5,6 @@ alembic
 pytest
 httpx
 python-socketio[fastapi]
+pyngrok
+load-dotenv
+pyyaml

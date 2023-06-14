@@ -135,3 +135,4 @@ package.json
 sql_app/tests
 sql_app/alembic/versions/5d088e10e2ab_.py
 database.db
+ngrok_app/ngrok.yml
