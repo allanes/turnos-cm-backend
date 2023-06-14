@@ -1,5 +1,7 @@
 import os
 import subprocess
+import signal
+import sys
 from typing import Any
 from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException, Request
 from sqlalchemy.orm import Session
@@ -21,6 +23,15 @@ os.environ['DISPLAY'] = ':0'
 
 models.Base.metadata.create_all(bind=engine)
 
+# Path to the virtual environment activation script
+venv_path = ".venv\\Scripts\\activate.bat"
+
+# Path to ngrok_server.py
+ngrok_server_path = "ngrok_app/server.py"
+
+# Store the ngrok server process
+ngrok_server_process = None
+
 app = FastAPI(
     title='Administración de Turnos - Centro Médico Esperanza',
     swagger_ui_parameters={
@@ -38,7 +49,8 @@ origins = [
     "http://localhost:*",
     "http://localhost:5000",
     "http://localhost:3000",
-    "http://192.168.100.0/16"
+    "http://192.168.100.0/16",
+    "https://6072-2803-9800-a441-82e4-6c61-e48b-44d2-9c0d.ngrok-free.app"
 ]
 
 app.add_middleware(
@@ -63,6 +75,24 @@ def inicializar_db(db: Session = Depends(get_db)):
 def inicializar_db(db: Session = Depends(get_db)):
     cargar_turnos_ejemplo(db=db)
 
+@app.post("/start_ngrok")
+def start_ngrok():
+    global ngrok_server_process
+
+    # Check if the ngrok server is already running
+    if ngrok_server_process is not None and ngrok_server_process.poll() is None:
+        raise HTTPException(status_code=400, detail="ngrok server is already running")
+
+    # Start ngrok_server.py in a new process
+    try:
+        ngrok_server_process = subprocess.Popen(
+            [sys.executable, ngrok_server_path],
+            env={**os.environ, "PATH": f"{venv_path}:{os.environ['PATH']}"}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "ngrok server started"}
 
 @app.get("/lista-videos-gdrive")
 def read_videos():
