@@ -20,6 +20,9 @@ from fastapi.staticfiles import StaticFiles
 from socketio import ASGIApp
 
 from fastapi.responses import FileResponse
+from dotenv import load_dotenv
+load_dotenv(os.path.join('ngrok_app', '.env'))
+import requests
 os.environ['DISPLAY'] = ':0'
 
 models.Base.metadata.create_all(bind=engine)
@@ -64,6 +67,15 @@ app.add_middleware(
 )
 
 some_file_path = "notification3.wav"
+
+@app.on_event("startup")
+async def startup_event():
+    reverse_proxy_port = os.getenv('NGINX_REVERSE_PROXY_PORT')
+    url = f'http://localhost:{reverse_proxy_port}'
+    respuesta = requests.post(url=url)
+    print(f'url: {url}, status: {respuesta.status_code}')
+    if respuesta.status_code == 200:
+        start_ngrok()
 
 @app.get("/notification")
 async def main():
@@ -119,6 +131,18 @@ def stop_ngrok():
         raise HTTPException(status_code=500, detail=str(e))
 
     return {"message": "ngrok server stopped"}
+
+@app.post('/restart_ngrok')
+def handle_restart_ngrok():
+    respuesta = stop_ngrok()
+    if respuesta.get('message', '') != "ngrok server stopped":
+        raise HTTPException(status_code=400, detail="ngrok server couldn't be stopped")
+    
+    respuesta = start_ngrok()
+    if respuesta.get('message', '') != "ngrok server started":
+        raise HTTPException(status_code=400, detail="ngrok server couldn't be started")
+    
+    return respuesta
 
 @app.get("/lista-videos-gdrive")
 def read_videos():
