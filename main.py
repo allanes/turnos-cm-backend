@@ -1,5 +1,8 @@
 import os
 import subprocess
+import signal
+import sys
+import platform
 from typing import Any
 from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException, Request
 from sqlalchemy.orm import Session
@@ -17,9 +20,22 @@ from fastapi.staticfiles import StaticFiles
 from socketio import ASGIApp
 
 from fastapi.responses import FileResponse
+from dotenv import load_dotenv
+load_dotenv(os.path.join('ngrok_app', '.env'))
+import requests
 os.environ['DISPLAY'] = ':0'
 
 models.Base.metadata.create_all(bind=engine)
+
+# Path to the virtual environment activation script
+venv_path_windows = ".venv\\Scripts\\activate.bat"
+venv_path_linux = ".venv/Scripts/activate"
+
+# Path to ngrok_server.py
+ngrok_server_path = "ngrok_app/server.py"
+
+# Store the ngrok server process
+ngrok_server_process = None
 
 app = FastAPI(
     title='Administración de Turnos - Centro Médico Esperanza',
@@ -38,7 +54,8 @@ origins = [
     "http://localhost:*",
     "http://localhost:5000",
     "http://localhost:3000",
-    "http://192.168.100.0/16"
+    "http://192.168.100.0/16",
+    "https://6072-2803-9800-a441-82e4-6c61-e48b-44d2-9c0d.ngrok-free.app"
 ]
 
 app.add_middleware(
@@ -51,6 +68,19 @@ app.add_middleware(
 
 some_file_path = "notification3.wav"
 
+@app.on_event("startup")
+async def startup_event():
+    reverse_proxy_port = os.getenv('NGINX_REVERSE_PROXY_PORT')
+    url = f'http://localhost:{reverse_proxy_port}'
+    
+    try:
+        respuesta = requests.get(url=url)
+        print(f'Servidor encontrado en {url}. Iniciando ngrok...')
+        if respuesta.status_code == 200:
+            start_ngrok()
+    except requests.exceptions.ConnectionError:
+        print(f'No se encontró respuesta en {url}. No se inició ngrok.')
+
 @app.get("/notification")
 async def main():
     return FileResponse(some_file_path)
@@ -62,6 +92,90 @@ def inicializar_db(db: Session = Depends(get_db)):
 @app.get("/cargar-turnos-ejemplo/")
 def inicializar_db(db: Session = Depends(get_db)):
     cargar_turnos_ejemplo(db=db)
+
+@app.post("/start_ngrok")
+def start_ngrok():
+    global ngrok_server_process
+
+    # Check if the ngrok server is already running
+    if ngrok_server_process is not None and ngrok_server_process.poll() is None:
+        raise HTTPException(status_code=400, detail="ngrok server is already running")
+
+    # Start ngrok_server.py in a new process
+    try:
+        venv_path = venv_path_linux
+        if platform.system == "Windows":
+            venv_path = venv_path_windows
+        
+        ngrok_server_process = subprocess.Popen(
+            [sys.executable, ngrok_server_path],
+            env={**os.environ, "PATH": f"{venv_path}:{os.environ['PATH']}"}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "ngrok server started"}
+
+@app.post("/stop_ngrok")
+def stop_ngrok():
+    global ngrok_server_process
+
+    # Check if the ngrok server is running
+    if ngrok_server_process is None or ngrok_server_process.poll() is not None:
+        raise HTTPException(status_code=400, detail="ngrok server is not running")
+
+    # Kill the ngrok_server.py process
+    try:
+        if platform.system() == "Windows":
+            ngrok_server_process.terminate()
+        else:
+            ngrok_server_process.send_signal(signal.SIGTERM)
+        ngrok_server_process = None
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "ngrok server stopped"}
+
+@app.post('/restart_ngrok')
+def handle_restart_ngrok():
+    global ngrok_server_process
+
+    # Check if the ngrok server is running
+    is_running = True
+    if ngrok_server_process is None or ngrok_server_process.poll() is not None:
+        # raise HTTPException(status_code=400, detail="ngrok server is not running")
+        is_running = False
+
+    # Kill the ngrok_server.py process
+    if is_running:
+        try:
+            if platform.system() == "Windows":
+                ngrok_server_process.terminate()
+            else:
+                ngrok_server_process.send_signal(signal.SIGTERM)
+                print("ngrok server stopped")
+            ngrok_server_process = None
+        except Exception as e:
+            # raise HTTPException(status_code=500, detail=str(e))
+            print(f'No se pudo detener el tunel de ngrok. Detalle: {str(e)}')
+
+    # Start ngrok_server.py in a new process
+    try:
+        venv_path = venv_path_linux
+        if platform.system == "Windows":
+            venv_path = venv_path_windows
+        
+        ngrok_server_process = subprocess.Popen(
+            [sys.executable, ngrok_server_path],
+            env={**os.environ, "PATH": f"{venv_path}:{os.environ['PATH']}"}
+        )
+        mensaje = 'Tunel de ngrok inicializado'
+        print(mensaje)
+    except Exception as e:
+        print(f'No se pudo iniciar el tunel de ngrok. Detalle: {str(e)}')
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {'message': mensaje}
 
 
 @app.get("/lista-videos-gdrive")
