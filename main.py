@@ -72,7 +72,7 @@ some_file_path = "notification3.wav"
 async def startup_event():
     reverse_proxy_port = os.getenv('NGINX_REVERSE_PROXY_PORT')
     url = f'http://localhost:{reverse_proxy_port}'
-    respuesta = requests.post(url=url)
+    respuesta = requests.get(url=url)
     print(f'url: {url}, status: {respuesta.status_code}')
     if respuesta.status_code == 200:
         start_ngrok()
