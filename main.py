@@ -138,15 +138,45 @@ def stop_ngrok():
 
 @app.post('/restart_ngrok')
 def handle_restart_ngrok():
-    respuesta = stop_ngrok()
-    if respuesta.get('message', '') != "ngrok server stopped":
-        raise HTTPException(status_code=400, detail="ngrok server couldn't be stopped")
-    
-    respuesta = start_ngrok()
-    if respuesta.get('message', '') != "ngrok server started":
-        raise HTTPException(status_code=400, detail="ngrok server couldn't be started")
-    
-    return respuesta
+    global ngrok_server_process
+
+    # Check if the ngrok server is running
+    is_running = True
+    if ngrok_server_process is None or ngrok_server_process.poll() is not None:
+        # raise HTTPException(status_code=400, detail="ngrok server is not running")
+        is_running = False
+
+    # Kill the ngrok_server.py process
+    if is_running:
+        try:
+            if platform.system() == "Windows":
+                ngrok_server_process.terminate()
+            else:
+                ngrok_server_process.send_signal(signal.SIGTERM)
+                print("ngrok server stopped")
+            ngrok_server_process = None
+        except Exception as e:
+            # raise HTTPException(status_code=500, detail=str(e))
+            print(f'No se pudo detener el tunel de ngrok. Detalle: {str(e)}')
+
+    # Start ngrok_server.py in a new process
+    try:
+        venv_path = venv_path_linux
+        if platform.system == "Windows":
+            venv_path = venv_path_windows
+        
+        ngrok_server_process = subprocess.Popen(
+            [sys.executable, ngrok_server_path],
+            env={**os.environ, "PATH": f"{venv_path}:{os.environ['PATH']}"}
+        )
+        mensaje = 'Tunel de ngrok inicializado'
+        print(mensaje)
+    except Exception as e:
+        print(f'No se pudo iniciar el tunel de ngrok. Detalle: {str(e)}')
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {'message': mensaje}
+
 
 @app.get("/lista-videos-gdrive")
 def read_videos():
