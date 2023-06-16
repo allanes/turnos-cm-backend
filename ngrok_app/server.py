@@ -28,7 +28,8 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
-    config_file = open('ngrok_app\\ngrok.yml')
+    ngrok_server_path = os.path.join('ngrok_app','ngrok.yml')
+    config_file = open(ngrok_server_path)
     config = yaml.safe_load(config_file)
     
     # Open a ngrok tunnel

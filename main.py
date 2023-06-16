@@ -25,7 +25,8 @@ os.environ['DISPLAY'] = ':0'
 models.Base.metadata.create_all(bind=engine)
 
 # Path to the virtual environment activation script
-venv_path = ".venv\\Scripts\\activate.bat"
+venv_path_windows = ".venv\\Scripts\\activate.bat"
+venv_path_linux = ".venv/Scripts/activate"
 
 # Path to ngrok_server.py
 ngrok_server_path = "ngrok_app/server.py"
@@ -86,6 +87,10 @@ def start_ngrok():
 
     # Start ngrok_server.py in a new process
     try:
+        venv_path = venv_path_linux
+        if platform.system == "Windows":
+            venv_path = venv_path_windows
+        
         ngrok_server_process = subprocess.Popen(
             [sys.executable, ngrok_server_path],
             env={**os.environ, "PATH": f"{venv_path}:{os.environ['PATH']}"}
