@@ -2,6 +2,7 @@ import os
 import subprocess
 import signal
 import sys
+import platform
 from typing import Any
 from fastapi import Depends, FastAPI, BackgroundTasks, HTTPException, Request
 from sqlalchemy.orm import Session

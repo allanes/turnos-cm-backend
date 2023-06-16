@@ -8,9 +8,12 @@ import yaml
 
 # Load environment variables
 load_dotenv()
+NGROK_AUTH_TOKEN = os.getenv("NGROK_AUTH_TOKEN")
+NGROK_SERVER_PORT = os.getenv("NGROK_SERVER_PORT", 8000)
+NGINX_REVERSE_PROXY_PORT = os.getenv("NGINX_REVERSE_PROXY_PORT", 8000)
 
 # Set the ngrok auth token and region
-conf.get_default().auth_token = os.getenv("NGROK_AUTH_TOKEN")
+conf.get_default().auth_token = NGROK_AUTH_TOKEN
 # conf.get_default().region = os.getenv("NGROK_REGION")
 
 app = FastAPI()
@@ -29,9 +32,8 @@ async def startup_event():
     config = yaml.safe_load(config_file)
     
     # Open a ngrok tunnel
-    # url = ngrok.connect(int(os.getenv("PORT")),).public_url
     print(f"Creando tunel...")
-    url = ngrok.connect(**config['tunnels']['tunel_cm_esperanza']).public_url
+    url = ngrok.connect(addr=NGINX_REVERSE_PROXY_PORT, **config['tunnels']['tunel_cm_esperanza']).public_url
     print(f"Public URL: {url}")
 
 @app.get("/")
@@ -40,4 +42,4 @@ def read_root():
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app,port=int(os.getenv("NGROK_SERVER_PORT", 8000)))
+    uvicorn.run(app,port=int(NGROK_SERVER_PORT))
