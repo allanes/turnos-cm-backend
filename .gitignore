@@ -135,3 +135,6 @@ package.json
 sql_app/tests
 sql_app/alembic/versions/5d088e10e2ab_.py
 database.db
+ngrok_app/ngrok.yml
+descargas/Manual_apagar_televisores.pdf
+descargas/Manual_iniciar_televisores.pdf

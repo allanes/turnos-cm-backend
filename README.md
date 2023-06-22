@@ -111,3 +111,37 @@ Para abrir las vistas de los televisores de todas las salas, usar desde cualquie
     http://{ip-servidor-backend}:8000/iniciar-vistas-teles
 
 NOTA: Revisar que en los televisores ya se vea el escritorio
+
+## Exponer endpoint de medicos a internet
+
+1. Opcionalmente se puede usar la integración de ngrok para exponer la vista de medicos a internet. Para eso, es necesario instalar nginx:
+
+    ```
+    sudo apt-get update
+    sudo apt-get install nginx
+    ```
+
+2. Usar la carpeta ngrok_app para guardar la configuracion. Crear los siguientes archivos reemplazando el auth_token:
+
+    - .env
+        ```
+        NGROK_AUTH_TOKEN=auth_token
+        NGROK_SERVER_PORT=8001
+        NGINX_REVERSE_PROXY_PORT=3006
+        ```
+
+    - ngrok.yml
+        ```
+        tunnels:
+            tunel_cm_esperanza:
+                proto: http
+                hostname: cm-esperanza.ngrok.app
+                host_header: rewrite
+                bind_tls: true
+        ```
+
+3. Configurar NginX como servidor proxy inverso:
+
+    ```
+    sudo sh scripts/setup_nginx.sh
+    ```
