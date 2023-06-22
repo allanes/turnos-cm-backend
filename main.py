@@ -1,3 +1,4 @@
+import logging
 import os
 import subprocess
 import signal
@@ -24,7 +25,7 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join('ngrok_app', '.env'))
 import requests
 os.environ['DISPLAY'] = ':0'
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 models.Base.metadata.create_all(bind=engine)
 
 # Path to the virtual environment activation script
@@ -220,23 +221,34 @@ async def handle_abrir_vistas_teles(request:Request, background_tasks: Backgroun
     else:
         return {'message': 'Acceso no autorizado'}
     
-@app.get("/descargar_qr", tags=["Downloads"])
+@app.get("/descargas/descargar_qr", tags=["Downloads"])
 async def descargar_qr():
-    file_name = "QR_Medicos.pdf"
-    
-    return FileResponse(file_name, media_type='application/pdf')
+    try:
+        file_full_path = os.path.join(BASE_DIR, "descargas", "QR_Medicos.pdf")
+        return FileResponse(file_full_path, media_type='application/pdf')
+    except Exception as e:
+        logging.error(f"Exception occurred: {e}")
+        raise HTTPException(status_code=404, detail=f"Archivo no encontrado ({file_full_path})")
 
-@app.get("/manual_iniciar_teles", tags=["Downloads"])
+@app.get("/descargas/manual_iniciar_teles", tags=["Downloads"])
 async def descargar_manual_iniciar_teles():
-    file_name = "QR_Medicos.pdf"
-    
-    return FileResponse(file_name, media_type='application/pdf')
+    try:
+        file_full_path = os.path.join(BASE_DIR, "descargas", "Manual_iniciar_televisores.pdf")
+        print(f'Buscando archivo {file_full_path}')
+        return FileResponse(file_full_path, media_type='application/pdf')
+    except Exception as e:
+        logging.error(f"Exception occurred: {e}")
+        raise HTTPException(status_code=404, detail=f"Archivo no encontrado ({file_full_path})")
 
-@app.get("/manual_apagar_teles", tags=["Downloads"])
+@app.get("/descargas/manual_apagar_teles", tags=["Downloads"])
 async def descargar_manual_apagar_teles():
-    file_name = "QR_Medicos.pdf"
-    
-    return FileResponse(file_name, media_type='application/pdf')
+    try:
+        file_full_path = os.path.join(BASE_DIR, "descargas", "Manual_apagar_televisores.pdf")
+        print(f'Buscando archivo {file_full_path}')
+        return FileResponse(file_full_path, media_type='application/pdf')
+    except Exception as e:
+        logging.error(f"Exception occurred: {e}")
+        raise HTTPException(status_code=404, detail=f"Archivo no encontrado ({file_full_path})")
 
 app = ASGIApp(sio, app)
     
