@@ -201,3 +201,24 @@ async def handle_previous_turn(
     await handle_evento_nuevo_paciente(id_medico=id, db=db)    
     
     return ultimo_turno
+
+@router.get("/{id}/repeatCallForCurrentPatient", response_model=turno.Turno)
+async def handle_repeat_call_for_current_turn(
+    *,
+    db: Session = Depends(deps.get_db),
+    id: int,
+) -> Any:
+    """
+    Delete an medico.
+    """
+    db_medico = crud_medico.medico.get_with_turns(db=db, id=id)
+    if not db_medico:
+        raise HTTPException(status_code=404, detail="Medico no encontrado")
+    if not db_medico.turnos:
+        raise HTTPException(status_code=404, detail="El Medico no tiene turnos")
+    
+    db_turno = crud_turno.turno.get(db=db, id=db_medico.turnos[0].id)
+    
+    await handle_evento_nuevo_paciente(id_medico=id, db=db)
+
+    return db_turno
